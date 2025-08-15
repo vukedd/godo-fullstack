@@ -1,0 +1,51 @@
+package com.app.godo.models;
+
+import com.app.godo.enums.VenueType;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Entity
+@Table(name = "venues")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Venue {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column(nullable = false, unique = true)
+    private String name;
+
+    @Column(nullable = true)
+    private String description;
+
+    @Column(nullable = false)
+    private String address;
+
+    private double averageRating;
+
+    @Column(nullable = false)
+    private VenueType type;
+
+    @Column(nullable = false)
+    private LocalDate createdAt;
+
+    @OneToOne
+    private Image image;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
+    private List<Review> review;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
+    private List<Manages> manages;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
+    private List<Event> events;
+}
