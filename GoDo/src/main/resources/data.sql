@@ -1,0 +1,1 @@
+INSERT INTO users(username, email, password, member_since, date_of_birth, phone_number, address, city, role) VALUES('admin', 'admin@gmail.com', 'admin', '2025-06-06', '2002-05-05', '060012345678', 'Miloje Mili 19', 'Bogojevo', 'ADMIN');
