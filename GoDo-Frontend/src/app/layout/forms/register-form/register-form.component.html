@@ -1,0 +1,24 @@
+<form [formGroup]="registerForm" class="flex justify-content-center align-items-center flex-column">
+  <p-floatlabel variant="in" class="my-2">
+    <input pInputText id="value2" autocomplete="off" formControlName="username" pTooltip="Username must contain from 5 to 15 alphanumerical characters without spaces!"/>
+    <label for="value2">Username</label>
+  </p-floatlabel>
+  <p-floatlabel variant="in" class="my-2">
+    <input pInputText id="value2" autocomplete="off" formControlName="email" pTooltip="Please enter a valid email address!"/>
+    <label for="value2">Email</label>
+  </p-floatlabel>
+  <p-floatlabel variant="in" class="my-2">
+    <input pInputText id="value2" autocomplete="off" formControlName="password" pTooltip="The password must contain at least 8 characters with at least one numerical and one text character!"/>
+    <label for="value2">Password</label>
+  </p-floatlabel>
+  <span class="my-2"
+    >You already have an account?
+    <a
+      href="#"
+      class="text-primary underline"
+      (click)="onSignInClick(); $event.preventDefault()"
+      >Sign in here</a
+    ></span
+  >
+  <p-button [loading]="loading" class="my-2" (click)="submitRegisterForm()" [disabled]="!isValid()">Submit</p-button>
+</form>
