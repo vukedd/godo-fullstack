@@ -66,6 +66,7 @@
 >
   <app-login-form
     (switchToRegister)="handleSwitchToRegister()"
+    (loginSuccess)="handleLoginSuccess()"
   ></app-login-form>
 </p-dialog>
 
@@ -77,5 +78,6 @@
 >
   <app-register-form
     (switchToLogin)="handleSwitchToLogin()"
+    (registerSuccess)="handleRegisterSuccess()"
   ></app-register-form>
 </p-dialog>
