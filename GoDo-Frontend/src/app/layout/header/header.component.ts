@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { ThemeService } from '../../../themes/theme.service';
 import { DialogModule } from 'primeng/dialog';
-import { LoginFormComponent } from "../forms/login-form/login-form.component";
+import { LoginFormComponent } from '../forms/login-form/login-form.component';
 import { Router } from '@angular/router';
 import { SidebarModule } from 'primeng/sidebar';
-import { RegisterFormComponent } from "../forms/register-form/register-form.component";
+import { RegisterFormComponent } from '../forms/register-form/register-form.component';
 
 @Component({
   selector: 'app-header',
@@ -14,8 +14,8 @@ import { RegisterFormComponent } from "../forms/register-form/register-form.comp
     DialogModule,
     LoginFormComponent,
     SidebarModule,
-    RegisterFormComponent
-],
+    RegisterFormComponent,
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
@@ -39,7 +39,7 @@ export class HeaderComponent {
     }
   }
 
-   handleRegisterSuccess() {
+  handleRegisterSuccess() {
     this.isRegister = false;
     this.isLogin = false;
   }
@@ -64,7 +64,7 @@ export class HeaderComponent {
     this.isLogin = true;
   }
 
-  openRegisterModal(){
+  openRegisterModal() {
     this.isRegister = true;
   }
 

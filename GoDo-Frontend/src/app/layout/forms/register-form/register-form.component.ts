@@ -11,19 +11,21 @@ import {
 } from '@angular/forms';
 
 import { TooltipModule } from 'primeng/tooltip';
+import { AuthService } from '../../../services/auth/auth.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-register-form',
   imports: [
-    FloatLabelModule, 
+    FloatLabelModule,
     ButtonModule,
     CommonModule,
     InputTextModule,
     ReactiveFormsModule,
-    TooltipModule
+    TooltipModule,
   ],
   templateUrl: './register-form.component.html',
-  styleUrl: './register-form.component.css'
+  styleUrl: './register-form.component.css',
 })
 export class RegisterFormComponent {
   @Output() switchToLogin = new EventEmitter<void>();
@@ -33,9 +35,22 @@ export class RegisterFormComponent {
 
   registerForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-    username: new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9]{5,15}$")]),
-    password: new FormControl('', [Validators.required, Validators.pattern("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")])
+    username: new FormControl('', [
+      Validators.required,
+      Validators.pattern('^[a-zA-Z0-9]{5,15}$'),
+    ]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.pattern(
+        '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+.!=]).{6,20}$'
+      ),
+    ]),
   });
+
+  constructor(
+    public authService: AuthService,
+    public messageService: MessageService
+  ) {}
 
   isValid() {
     return this.registerForm.valid;
@@ -51,9 +66,32 @@ export class RegisterFormComponent {
 
   submitRegisterForm() {
     this.loading = true;
-    setTimeout(() => {
-      this.loading = false;
-    }, 3000)
-  }
+    this.authService.sendRegistrationRequest({
+        username: this.registerForm.value.username,
+        email: this.registerForm.value.email,
+        password: this.registerForm.value.password,
+      })
+      .subscribe({
+        next: (next) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Successful registration',
+            detail: 'You have registered succesfully! Check your email!',
+          });
 
+          this.registerForm.reset();
+          this.loading = false;
+          this.onRegisterSuccess();
+        },
+        error: (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Unsuccessful registration',
+            detail: error.error.message,
+          });
+
+          this.loading = false;
+        },
+      });
+  }
 }
