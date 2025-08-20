@@ -1,36 +1,32 @@
-package com.app.godo.services.impl;
+package com.app.godo.services.auth;
 
 import com.app.godo.dtos.accountRequest.AccountRequestDto;
 import com.app.godo.dtos.accountRequest.AccountRequestSuccessDto;
+import com.app.godo.dtos.auth.AuthenticationRequestDto;
+import com.app.godo.dtos.auth.AuthenticationResponseDto;
 import com.app.godo.exceptions.registration.RegistrationException;
 import com.app.godo.mappers.AccountRequestMapper;
 import com.app.godo.models.AccountRequest;
 import com.app.godo.models.User;
 import com.app.godo.repositories.accountRequest.AccountRequestRepository;
 import com.app.godo.repositories.user.UserRepository;
-import com.app.godo.services.AccountRequestService;
-import com.app.godo.services.EmailService;
+import com.app.godo.services.email.EmailService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AccountRequestServiceImpl implements AccountRequestService {
+@RequiredArgsConstructor
+public class AuthService {
     private final AccountRequestRepository accountRequestRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
-
-    @Autowired
-    public AccountRequestServiceImpl(AccountRequestRepository accountRequestRepository, UserRepository userRepository, EmailService emailService) {
-        this.accountRequestRepository = accountRequestRepository;
-        this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
-        this.emailService = emailService;
-    }
-
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     @Transactional
     public AccountRequestSuccessDto sendRegistrationRequest(AccountRequestDto accountRequestDto) {
@@ -54,5 +50,21 @@ public class AccountRequestServiceImpl implements AccountRequestService {
         emailService.sendRegistrationRequestSuccessEmail(registrationRequest.getUsername(), registrationRequest.getEmail());
 
         return AccountRequestMapper.toAccountRequestSuccessDto(registrationRequest);
+    }
+
+
+    public AuthenticationResponseDto authenticate(
+            final AuthenticationRequestDto request) {
+
+        final var authToken = UsernamePasswordAuthenticationToken
+                .unauthenticated(request.getUsername(), request.getPassword());
+
+        final var authentication = authenticationManager.authenticate(authToken);
+
+        var userEntity = userRepository.findByUsername(request.getUsername());
+
+        final var token = jwtService.generateToken(userEntity);
+
+        return new AuthenticationResponseDto(token);
     }
 }

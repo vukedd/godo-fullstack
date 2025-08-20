@@ -1,14 +1,14 @@
-<div class="flex justify-content-center align-items-center flex-column">
+<form [formGroup]="loginForm" class="flex justify-content-center align-items-center flex-column">
   <p-floatlabel variant="in" class="my-2">
-    <input pInputText id="value2" autocomplete="off" />
+    <input pInputText id="value2" autocomplete="off" formControlName="username"/>
     <label for="value2">Username</label>
   </p-floatlabel>
   <p-floatlabel variant="in" class="my-2">
-    <input pInputText id="value2" autocomplete="off" type="password"/>
+    <input pInputText id="value2" autocomplete="off" type="password" formControlName="password"/>
     <label for="value2">Password</label>
   </p-floatlabel>
   <span class="my-2">You don't have an account? <a href="#" class="text-primary underline" (click)="onSignUpClick(); $event.preventDefault()">Sign up here</a></span>
-  <p-button [loading]="loading" (click)="submitLoginForm()" class="my-2"
+  <p-button [loading]="loading" (click)="submitLoginForm()" [disabled]="!isValid()"   class="my-2"
     >Submit</p-button
   >
-</div>
+</form>

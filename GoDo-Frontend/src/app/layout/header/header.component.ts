@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { ThemeService } from '../../../themes/theme.service';
 import { DialogModule } from 'primeng/dialog';
@@ -6,6 +6,10 @@ import { LoginFormComponent } from '../forms/login-form/login-form.component';
 import { Router } from '@angular/router';
 import { SidebarModule } from 'primeng/sidebar';
 import { RegisterFormComponent } from '../forms/register-form/register-form.component';
+import { AuthService } from '../../services/auth/auth.service';
+import { CommonModule } from '@angular/common';
+import { MenuModule } from 'primeng/menu';
+import { MenuItem, PrimeIcons } from 'primeng/api';
 
 @Component({
   selector: 'app-header',
@@ -15,17 +19,49 @@ import { RegisterFormComponent } from '../forms/register-form/register-form.comp
     LoginFormComponent,
     SidebarModule,
     RegisterFormComponent,
+    CommonModule,
+    MenuModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   public modalVisible: boolean = false;
   public isLogin: boolean = false;
   public isRegister: boolean = false;
   public sidebarVisible: boolean = false;
+  items: MenuItem[] | undefined;
 
-  constructor(public themeService: ThemeService, public router: Router) {}
+  constructor(
+    public themeService: ThemeService,
+    public router: Router,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    if (this.authService.isLoggedIn()) {
+      this.items = [
+        {
+          label: `${this.authService.getUsername()}`,
+          icon: PrimeIcons.USER,
+          items: [
+            {
+              label: 'Profile',
+              icon: 'pi pi-user',
+              routerLink: '',
+            },
+            {
+              label: 'Logout',
+              icon: PrimeIcons.SIGN_OUT,
+              command: () => {
+                this.logout();
+              },
+            },
+          ],
+        },
+      ];
+    }
+  }
 
   toggleTheme() {
     this.themeService.toggleDarkMode();
@@ -74,5 +110,15 @@ export class HeaderComponent {
     } else {
       this.sidebarVisible = true;
     }
+  }
+
+  isLoggedIn() {
+    return this.authService.isLoggedIn();
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['']);
+    return;
   }
 }

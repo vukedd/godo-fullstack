@@ -1,19 +1,17 @@
-package com.app.godo.services.impl;
-import com.app.godo.services.EmailService;
+package com.app.godo.services.email;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailServiceImpl implements EmailService {
+@RequiredArgsConstructor
+public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
-    @Override
     public void sendRegistrationRequestSuccessEmail(String username, String address) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {

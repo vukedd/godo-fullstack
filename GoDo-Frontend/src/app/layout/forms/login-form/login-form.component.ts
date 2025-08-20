@@ -9,6 +9,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
+import { AuthService } from '../../../services/auth/auth.service';
+import { Router } from '@angular/router';
+import { TokenDto } from '../../../models/auth/tokenDto';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-login-form',
@@ -29,17 +33,56 @@ export class LoginFormComponent {
 
   loginForm = new FormGroup({
     username: new FormControl('', Validators.required),
-    password: new FormControl('', Validators.required)
+    password: new FormControl('', Validators.required),
   });
+
+  constructor(
+    private authService: AuthService,
+    public router: Router,
+    public messageService: MessageService
+  ) {}
 
   onSignUpClick(): void {
     this.switchToRegister.emit();
   }
 
+  isValid() {
+    return this.loginForm.valid;
+  }
+
   submitLoginForm() {
     this.loading = true;
-    setTimeout(() => {
-      this.loading = false;
-    }, 3000)
+    this.authService
+      .sendLoginRequest({
+        username: this.loginForm.value.username,
+        password: this.loginForm.value.password,
+      })
+      .subscribe({
+        next: (response: TokenDto) => {
+          this.authService.handleLogin(response);
+
+          this.loading = false;
+          this.loginForm.reset();
+          this.loginSuccess.emit();
+          this.router.navigate(['']);
+        },
+        error: (error) => {
+          let message: string = "";
+          switch (error.status) {
+            case 401:
+              message = "Invalid credentials";
+              break;
+            default:
+              message = "An unknown error has occurred, if the problem persists contact support!";
+          }
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Unsuccessful authentication',
+            detail: message
+          });
+          this.loading = false;
+        },
+      });
   }
 }
