@@ -1,1 +1,1 @@
-INSERT INTO users(username, email, password, member_since, date_of_birth, phone_number, address, city, role) VALUES('admin', 'admin@gmail.com', 'admin', '2025-06-06', '2002-05-05', '060012345678', 'Miloje Mili 19', 'Bogojevo', 'ADMIN');
+INSERT INTO users(username, email, password, member_since, date_of_birth, phone_number, address, city, role) VALUES('admin', 'admin@gmail.com', '$2a$10$mkGe9hwtxgt2/HYrHWCJLeS/6HiIuk4Ozf9JczLxBmU.ra.f4D1oy', '2025-06-06', '2002-05-05', '060012345678', 'Miloje Mili 19', 'Bogojevo', 'ADMIN');
