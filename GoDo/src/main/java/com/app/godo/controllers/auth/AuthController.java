@@ -5,14 +5,13 @@ import com.app.godo.dtos.accountRequest.AccountRequestSuccessDto;
 import com.app.godo.dtos.auth.AuthenticationRequestDto;
 import com.app.godo.dtos.auth.AuthenticationResponseDto;
 import com.app.godo.services.auth.AuthService;
-import com.nimbusds.openid.connect.sdk.AuthenticationResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -29,4 +28,8 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponseDto> authenticate(@Valid @RequestBody AuthenticationRequestDto authRequest){
         return ResponseEntity.ok(authService.authenticate(authRequest));
     }
-}
+
+    @GetMapping("/refresh-token/{id}")
+    public ResponseEntity<AuthenticationResponseDto> refreshToken(@PathVariable Long id) {
+        return ResponseEntity.ok(authService.refreshToken(id));
+    }}

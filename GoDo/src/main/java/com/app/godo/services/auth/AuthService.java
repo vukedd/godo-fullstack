@@ -4,11 +4,14 @@ import com.app.godo.dtos.accountRequest.AccountRequestDto;
 import com.app.godo.dtos.accountRequest.AccountRequestSuccessDto;
 import com.app.godo.dtos.auth.AuthenticationRequestDto;
 import com.app.godo.dtos.auth.AuthenticationResponseDto;
+import com.app.godo.exceptions.refreshToken.ValidationException;
 import com.app.godo.exceptions.registration.RegistrationException;
 import com.app.godo.mappers.AccountRequestMapper;
 import com.app.godo.models.AccountRequest;
+import com.app.godo.models.RefreshToken;
 import com.app.godo.models.User;
 import com.app.godo.repositories.accountRequest.AccountRequestRepository;
+import com.app.godo.repositories.auth.RefreshTokenRepository;
 import com.app.godo.repositories.user.UserRepository;
 import com.app.godo.services.email.EmailService;
 import jakarta.transaction.Transactional;
@@ -17,6 +20,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.time.Duration;
+import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +34,11 @@ public class AuthService {
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final RefreshTokenRepository refreshTokenRepository;
+
+
+    @Value("${application.security.jwt.refresh-token-ttl}")
+    private Long refreshTokenExpireTime;
 
     @Transactional
     public AccountRequestSuccessDto sendRegistrationRequest(AccountRequestDto accountRequestDto) {
@@ -65,6 +77,21 @@ public class AuthService {
 
         final var token = jwtService.generateToken(userEntity);
 
-        return new AuthenticationResponseDto(token);
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setUser(userEntity);
+        refreshToken.setCreatedAt(Instant.now());
+        refreshToken.setExpiresAt(Instant.now().plus(Duration.ofMillis(refreshTokenExpireTime)));
+        refreshTokenRepository.save(refreshToken);
+
+        return new AuthenticationResponseDto(token, refreshToken.getId());
+    }
+
+    public AuthenticationResponseDto refreshToken(Long refreshTokenId) {
+        final var refreshTokenEntity = refreshTokenRepository
+                .findByIdAndExpiresAtAfter(refreshTokenId, Instant.now())
+                .orElseThrow(() -> new ValidationException("Invalid or expired refresh token!", ValidationException.ErrorType.BAD_REQUEST));
+
+        final var newAccessToken = jwtService.generateToken(refreshTokenEntity.getUser());
+        return new AuthenticationResponseDto(newAccessToken, refreshTokenId);
     }
 }

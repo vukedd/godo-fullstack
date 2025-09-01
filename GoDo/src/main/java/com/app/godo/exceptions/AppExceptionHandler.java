@@ -1,6 +1,7 @@
 package com.app.godo.exceptions;
 
 import com.app.godo.dtos.error.ErrorResponseDto;
+import com.app.godo.exceptions.refreshToken.ValidationException;
 import com.app.godo.exceptions.registration.RegistrationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,5 +44,23 @@ public class AppExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage())
         );
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponseDto> handleValidationException(ValidationException ex) {
+        HttpStatus status;
+        String errorMessage = "";
+        switch (ex.getErrorType()) {
+            case BAD_REQUEST:
+                status = HttpStatus.BAD_REQUEST;
+                errorMessage = "Invalid token!";
+                break;
+            default:
+                status = HttpStatus.INTERNAL_SERVER_ERROR;
+                errorMessage = "Internal server error";
+                break;
+        }
+
+        return new ResponseEntity<>(new ErrorResponseDto(errorMessage, ex.getErrorType().name()), status);
     }
 }
