@@ -3,7 +3,7 @@ import { ButtonModule } from 'primeng/button';
 import { ThemeService } from '../../../themes/theme.service';
 import { DialogModule } from 'primeng/dialog';
 import { LoginFormComponent } from '../forms/login-form/login-form.component';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { SidebarModule } from 'primeng/sidebar';
 import { RegisterFormComponent } from '../forms/register-form/register-form.component';
 import { AuthService } from '../../services/auth/auth.service';
@@ -20,8 +20,9 @@ import { MenuItem, PrimeIcons } from 'primeng/api';
     SidebarModule,
     RegisterFormComponent,
     CommonModule,
+    RouterModule,
     MenuModule,
-  ],
+],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
@@ -114,6 +115,10 @@ export class HeaderComponent implements OnInit {
 
   isLoggedIn() {
     return this.authService.isLoggedIn();
+  }
+
+  isAdmin() {
+    return this.authService.isAdmin();
   }
 
   logout() {

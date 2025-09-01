@@ -6,6 +6,7 @@ import { AccountRegistrationRequest } from '../../models/auth/requests/accountRe
 import { LoginRequest } from '../../models/auth/requests/loginRequest';
 import { TokenDto } from '../../models/auth/tokenDto';
 import { jwtDecode } from 'jwt-decode';
+import { MyJwtPayload } from '../../models/auth/myJwtPayload';
 
 @Injectable({
   providedIn: 'root',
@@ -70,5 +71,15 @@ export class AuthService {
     let decodedToken = jwtDecode(token);
 
     return decodedToken.sub;
+  }
+
+  isAdmin(): boolean{
+    let token: string | null = this.getAccessToken();
+    
+    if (token == null)
+      return false;
+
+    let decodedToken = jwtDecode<MyJwtPayload>(token);
+    return decodedToken.role == "ADMIN";
   }
 }

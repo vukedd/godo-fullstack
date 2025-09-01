@@ -1,99 +1,51 @@
-<div
-  class="justify-content-between border-bottom-1 border-primary pt-2 pb-2 align-items-center px-3 fixed top-0 left-0 right-0 bg-black-alpha-90 hidden lg:flex"
->
-  <span class="text-4xl text-primary">GoDo</span>
-  <div *ngIf="isLoggedIn()">
-    <p-button [link]="true" styleClass="text-xl">Dashboard</p-button>
-    <p-button [link]="true" styleClass="text-xl">Events</p-button>
-    <p-button [link]="true" styleClass="text-xl">About</p-button>
-  </div>
-  <div *ngIf="!isLoggedIn()"></div>
-  <div class="flex justify-content-center align-items-center">
-    <p-button
-      styleClass="text-xl"
-      (click)="openLoginModal()"
-      *ngIf="!isLoggedIn()"
-      >Log in</p-button
-    >
-    <p-button *ngIf="isLoggedIn()" (click)="menu.toggle($event)">
-      <span class="pi pi-user mr-10"></span>
-      <span class="pi pi-angle-down"></span>
-    </p-button>
-    <p-menu #menu [popup]="true" [model]="items"></p-menu>
-  </div>
+<!-- PC -->
+<div class="justify-content-between border-bottom-1 border-primary pt-2 pb-2 align-items-center px-3 fixed top-0 left-0 right-0 bg-black-alpha-90 hidden lg:flex">
+    <span class="text-4xl text-primary">GoDo</span>
+    <div *ngIf="isLoggedIn()">
+        <p-button [link]="true" styleClass="text-xl">Dashboard</p-button>
+        <p-button [link]="true" styleClass="text-xl">Events</p-button>
+        <p-button [link]="true" [routerLink]="'admin-hub'" styleClass="text-xl" *ngIf="isAdmin()">Admin hub</p-button>
+    </div>
+    <div *ngIf="!isLoggedIn()"></div>
+    <div class="flex justify-content-center align-items-center">
+        <p-button styleClass="text-xl" (click)="openLoginModal()" *ngIf="!isLoggedIn()">Log in</p-button>
+        <p-button *ngIf="isLoggedIn()" (click)="menu.toggle($event)">
+            <span class="pi pi-user mr-10"></span>
+            <span class="pi pi-angle-down"></span>
+        </p-button>
+        <p-menu #menu [popup]="true" [model]="items"></p-menu>
+    </div>
 </div>
 
 <!-- MOBILE -->
-<div
-  class="justify-content-between border-bottom-1 border-primary pt-2 pb-2 align-items-center px-3 fixed top-0 left-0 right-0 bg-black-alpha-90 lg:hidden flex"
->
-  <p-button
-    (click)="toggleSideMenu()"
-    icon="pi pi-bars"
-    severity="primary"
-    *ngIf="isLoggedIn()"
-  ></p-button>
-  <span class="text-4xl text-primary">GoDo</span>
-  <div
-    class="flex justify-content-center align-items-center"
-    *ngIf="!isLoggedIn()"
-  >
-    <p-button styleClass="text-xl" (click)="openLoginModal()">Log in</p-button>
-  </div>
-  <div *ngIf="isLoggedIn()"></div>
+<div class="justify-content-between border-bottom-1 border-primary pt-2 pb-2 align-items-center px-3 fixed top-0 left-0 right-0 bg-black-alpha-90 lg:hidden flex">
+    <p-button (click)="toggleSideMenu()" icon="pi pi-bars" severity="primary" *ngIf="isLoggedIn()"></p-button>
+    <span class="text-4xl text-primary">GoDo</span>
+    <div class="flex justify-content-center align-items-center" *ngIf="!isLoggedIn()">
+        <p-button styleClass="text-xl" (click)="openLoginModal()">Log in</p-button>
+    </div>
+    <div *ngIf="isLoggedIn()"></div>
 </div>
 
-<p-sidebar
-  [(visible)]="sidebarVisible"
-  position="left"
-  styleClass="app-sidebar"
->
-  <div class="flex flex-column justify-content-between h-full">
-    <div class="flex flex-column justify-content-center align-items-center">
-      <p-button [link]="true" styleClass="font-bold text-3xl"
-        >Dashboard</p-button
-      >
-      <p-button [link]="true" styleClass="font-bold text-3xl">Events</p-button>
-      <p-button [link]="true" styleClass="font-bold text-3xl">About</p-button>
+<p-sidebar [(visible)]="sidebarVisible" position="left" styleClass="app-sidebar">
+    <div class="flex flex-column justify-content-between h-full">
+        <div class="flex flex-column justify-content-center align-items-center">
+            <p-button [link]="true" styleClass="font-bold text-3xl">Dashboard</p-button>
+            <p-button [link]="true" styleClass="font-bold text-3xl">Events</p-button>
+            <p-button [link]="true" [routerLink]="'admin-hub'" styleClass="font-bold text-3xl" *ngIf="isAdmin()">Admin hub</p-button>
+        </div>
+        <div class="flex flex-column gap-3 px-4 pb-4">
+            <p-button label="Profile" icon="pi pi-user" styleClass="p-button-lg w-full"></p-button>
+            <p-button label="Logout" icon="pi pi-sign-out" [outlined]="true" styleClass="p-button-lg w-full" (click)="logout()"></p-button>
+        </div>
     </div>
-    <div class="flex flex-column gap-3 px-4 pb-4">
-      <p-button
-        label="Profile"
-        icon="pi pi-user"
-        styleClass="p-button-lg w-full"
-      ></p-button>
-      <p-button
-        label="Logout"
-        icon="pi pi-sign-out"
-        [outlined]="true"
-        styleClass="p-button-lg w-full"
-        (click)="logout()"
-      ></p-button>
-    </div>
-  </div>
 </p-sidebar>
 
 <!-- Log in, register dialog -->
-<p-dialog
-  header="Log in"
-  [modal]="true"
-  [(visible)]="isLogin"
-  [style]="{ width: '25rem' }"
->
-  <app-login-form
-    (switchToRegister)="handleSwitchToRegister()"
-    (loginSuccess)="handleLoginSuccess()"
-  ></app-login-form>
+<p-dialog header="Log in" [modal]="true" [(visible)]="isLogin" [style]="{ width: '25rem' }">
+    <app-login-form (switchToRegister)="handleSwitchToRegister()" (loginSuccess)="handleLoginSuccess()"></app-login-form>
 </p-dialog>
 
-<p-dialog
-  header="Register"
-  [modal]="true"
-  [(visible)]="isRegister"
-  [style]="{ width: '25rem' }"
->
-  <app-register-form
-    (switchToLogin)="handleSwitchToLogin()"
-    (registerSuccess)="handleRegisterSuccess()"
-  ></app-register-form>
+<p-dialog header="Register" [modal]="true" [(visible)]="isRegister" [style]="{ width: '25rem' }">
+    <app-register-form (switchToLogin)="handleSwitchToLogin()" (registerSuccess)="handleRegisterSuccess()"></app-register-form>
 </p-dialog>
