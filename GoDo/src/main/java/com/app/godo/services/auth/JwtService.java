@@ -18,8 +18,7 @@ public class JwtService {
     private final JwtEncoder jwtEncoder;
 
     public String generateToken(final User user) {
-
-        String role = user instanceof Administrator ? "ADMIN" : "MEMBER";
+        String role = user.getRole();
         final var claimsSet = JwtClaimsSet.builder()
                 .subject(user.getUsername())
                 .issuer(issuer)

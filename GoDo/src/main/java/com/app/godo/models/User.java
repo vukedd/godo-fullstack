@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -59,4 +60,11 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "commentedBy")
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
+
+    @Column(name = "role", insertable = false, updatable = false)
+    private String role;
+
 }
