@@ -4,7 +4,7 @@
     <div *ngIf="isLoggedIn()">
         <p-button [link]="true" styleClass="text-xl">Dashboard</p-button>
         <p-button [link]="true" styleClass="text-xl">Events</p-button>
-        <p-button [link]="true" [routerLink]="'admin-hub'" styleClass="text-xl" *ngIf="isAdmin()">Admin hub</p-button>
+        <p-button [link]="true" [routerLink]="'/admin-hub'" styleClass="text-xl" *ngIf="isAdmin()">Admin hub</p-button>
     </div>
     <div *ngIf="!isLoggedIn()"></div>
     <div class="flex justify-content-center align-items-center">
@@ -32,7 +32,7 @@
         <div class="flex flex-column justify-content-center align-items-center">
             <p-button [link]="true" styleClass="font-bold text-3xl">Dashboard</p-button>
             <p-button [link]="true" styleClass="font-bold text-3xl">Events</p-button>
-            <p-button [link]="true" [routerLink]="'admin-hub'" styleClass="font-bold text-3xl" *ngIf="isAdmin()">Admin hub</p-button>
+            <p-button [link]="true" [routerLink]="'/admin-hub'" styleClass="font-bold text-3xl" *ngIf="isAdmin()">Admin hub</p-button>
         </div>
         <div class="flex flex-column gap-3 px-4 pb-4">
             <p-button label="Profile" icon="pi pi-user" styleClass="p-button-lg w-full"></p-button>

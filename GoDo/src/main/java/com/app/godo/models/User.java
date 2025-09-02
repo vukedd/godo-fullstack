@@ -37,16 +37,16 @@ public class User {
     @Column(name = "memberSince", nullable = false)
     private LocalDate memberSince;
 
-    @Column(name = "dateOfBirth", nullable = false)
+    @Column(name = "dateOfBirth", nullable = true)
     private LocalDate dateOfBirth;
 
-    @Column(name = "phoneNumber", nullable = false, unique = true)
+    @Column(name = "phoneNumber", nullable = true, unique = true)
     private String phoneNumber;
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address", nullable = true)
     private String address;
 
-    @Column(name = "city", nullable = false)
+    @Column(name = "city", nullable = true)
     private String city;
 
     @OneToOne

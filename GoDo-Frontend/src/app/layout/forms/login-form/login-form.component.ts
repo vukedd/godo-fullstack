@@ -11,7 +11,7 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../../services/auth/auth.service';
 import { Router } from '@angular/router';
-import { TokenDto } from '../../../models/auth/tokenDto';
+import { TokenDto } from '../../../models/auth/jwt/tokenDto';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -59,7 +59,7 @@ export class LoginFormComponent {
       })
       .subscribe({
         next: (response: TokenDto) => {
-          this.authService.handleLogin(response);
+          this.authService.setTokens(response);
 
           this.loading = false;
           this.loginForm.reset();
