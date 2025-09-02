@@ -1,6 +1,7 @@
 package com.app.godo.exceptions;
 
 import com.app.godo.dtos.error.ErrorResponseDto;
+import com.app.godo.exceptions.general.NotFoundException;
 import com.app.godo.exceptions.refreshToken.ValidationException;
 import com.app.godo.exceptions.registration.RegistrationException;
 import org.springframework.http.HttpStatus;
@@ -62,5 +63,13 @@ public class AppExceptionHandler {
         }
 
         return new ResponseEntity<>(new ErrorResponseDto(errorMessage, ex.getErrorType().name()), status);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<NotFoundException> handleNotFoundException(ValidationException ex) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String errorMessage = ex.getMessage();
+
+        return new ResponseEntity<>(new NotFoundException(errorMessage), status);
     }
 }

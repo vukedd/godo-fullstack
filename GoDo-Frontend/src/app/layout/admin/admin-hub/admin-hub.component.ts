@@ -12,6 +12,4 @@ import { ButtonModule } from "primeng/button";
   templateUrl: './admin-hub.component.html',
   styleUrl: './admin-hub.component.css'
 })
-export class AdminHubComponent {
-
-}
+export class AdminHubComponent {}
