@@ -211,4 +211,88 @@ public class EmailService {
             throw new RuntimeException("Failed to send email: " + e.getMessage(), e);
         }
     }
+
+    @Async
+    public void sendRegistrationRequestDeclineEmail(String username, String address) {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            helper.setTo(address);
+            helper.setFrom("info@godo.com");
+            helper.setSubject("Account Registration Declined");
+
+            helper.setText("<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "<head>\n" +
+                    "    <meta charset=\"UTF-8\">\n" +
+                    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                    "    <meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">\n" +
+                    "    <title>Registration Request Declined</title>\n" +
+                    "    <style>\n" +
+                    "        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }\n" +
+                    "        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }\n" +
+                    "        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }\n" +
+                    "        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #1c1c1c; }\n" +
+                    "        @media screen and (max-width: 600px) {\n" +
+                    "            .container { width: 100% !important; max-width: 100% !important; }\n" +
+                    "            .content { padding: 20px !important; }\n" +
+                    "            .header { padding: 20px 10px !important; }\n" +
+                    "        }\n" +
+                    "    </style>\n" +
+                    "</head>\n" +
+                    "<body style=\"margin: 0 !important; padding: 0 !important; background-color: #1c1c1c;\">\n" +
+                    "    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n" +
+                    "        <tr>\n" +
+                    "            <td align=\"center\" style=\"background-color: #1c1c1c; padding: 20px 0;\">\n" +
+                    "                <table class=\"container\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px; background-color: #2b2b2b; border-radius: 8px; overflow: hidden;\">\n" +
+                    "                    <tr>\n" +
+                    "                        <td align=\"left\" class=\"content\" style=\"padding: 20px 40px 40px 40px; font-family: Arial, sans-serif;\">\n" +
+                    "                            <h1 style=\"font-size: 24px; font-weight: bold; color: #D9534F; margin: 0 0 20px 0;\">\n" +
+                    "                                Your Registration Request Was Declined\n" +
+                    "                            </h1>\n" +
+                    "                            <p style=\"font-size: 16px; line-height: 1.5; color: #EAEAEA; margin: 0 0 15px 0;\">\n" +
+                    "                                Hi " + username + ",\n" +
+                    "                            </p>\n" +
+                    "                            <p style=\"font-size: 16px; line-height: 1.5; color: #EAEAEA; margin: 0 0 15px 0;\">\n" +
+                    "                                After careful review, we regret to inform you that your account registration request has been declined.\n" +
+                    "                            </p>\n" +
+                    "                            <p style=\"font-size: 16px; line-height: 1.5; color: #EAEAEA; margin: 0 0 25px 0;\">\n" +
+                    "                                If you believe this was a mistake or would like to try again, you may submit a new registration request in the future.\n" +
+                    "                            </p>\n" +
+                    "                            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n" +
+                    "                                <tr><td style=\"border-bottom: 2px solid #D9534F;\"></td></tr>\n" +
+                    "                            </table>\n" +
+                    "                            <p style=\"font-size: 16px; line-height: 1.5; color: #EAEAEA; margin: 25px 0 0 0;\">\n" +
+                    "                                Thank you for your interest.\n" +
+                    "                                <br>\n" +
+                    "                                The GoDo Team\n" +
+                    "                            </p>\n" +
+                    "                        </td>\n" +
+                    "                    </tr>\n" +
+                    "                    <tr>\n" +
+                    "                        <td align=\"center\" style=\"padding: 20px 40px; background-color: #222222;\">\n" +
+                    "                            <p style=\"font-size: 12px; line-height: 1.5; color: #888888; margin: 0;\">\n" +
+                    "                                You are receiving this email because your account registration request was reviewed and declined.\n" +
+                    "                            </p>\n" +
+                    "                            <p style=\"font-size: 12px; line-height: 1.5; color: #888888; margin: 10px 0 0 0;\">\n" +
+                    "                                &copy; 2025 GoDo. All rights reserved.<br>\n" +
+                    "                                123 Coconut Street, Green Valley, 12345\n" +
+                    "                            </p>\n" +
+                    "                            <p style=\"font-size: 12px; line-height: 1.5; margin: 10px 0 0 0;\">\n" +
+                    "                                <a href=\"#\" style=\"color: #D9534F; text-decoration: none;\">Contact Support</a>\n" +
+                    "                            </p>\n" +
+                    "                        </td>\n" +
+                    "                    </tr>\n" +
+                    "                </table>\n" +
+                    "            </td>\n" +
+                    "        </tr>\n" +
+                    "    </table>\n" +
+                    "</body>\n" +
+                    "</html>", true);
+
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send declined email: " + e.getMessage(), e);
+        }
+    }
 }

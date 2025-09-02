@@ -45,4 +45,22 @@ export class RegistrationRequestManagementComponent implements OnInit {
         },
       });
   }
+
+  rejectRequest(index: number) {
+    let requestId = this.pendingRegistrationRequests[index].id;
+
+    this.accountRequestService
+      .rejectPendingAccountRequest(requestId)
+      .subscribe({
+        next: (response) => {
+          if (this.pendingRegistrationRequests.length == 1) {
+            this.pendingRegistrationRequests.pop();
+          } else {
+            this.pendingRegistrationRequests = this.pendingRegistrationRequests
+              .slice(0, index)
+              .concat(this.pendingRegistrationRequests.slice(index + 1));
+          }
+        },
+      });
+  }
 }

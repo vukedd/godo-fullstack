@@ -17,4 +17,8 @@ export class AccountRequestService {
   public approvePendingAccountRequest(requestId: number): Observable<any> {
     return this.http.post(environment.apiUrl + "/account-request/approve", {requestId: requestId});
   }
+
+  public rejectPendingAccountRequest(requestId: number): Observable<any> {
+    return this.http.put(environment.apiUrl + "/account-request/reject", {requestId: requestId});
+  }
 }

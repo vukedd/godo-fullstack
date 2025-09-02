@@ -3,6 +3,7 @@ package com.app.godo.services.accountRequest;
 
 import com.app.godo.dtos.accountRequest.ApprovedRegistrationRequestDto;
 import com.app.godo.dtos.accountRequest.PendingAccountRequestDto;
+import com.app.godo.dtos.accountRequest.RejectRegistrationRequestDto;
 import com.app.godo.enums.RequestStatus;
 import com.app.godo.exceptions.general.NotFoundException;
 import com.app.godo.models.AccountRequest;
@@ -59,6 +60,19 @@ public class AccountRequestService {
 
         emailService.sendRegistrationRequestApprovedEmail(newUser.getUsername(), newUser.getEmail());
 
-        return new ApprovedRegistrationRequestDto("Registration request succesfully approved!");
+        return new ApprovedRegistrationRequestDto("Registration request successfully approved!");
     }
+
+    public RejectRegistrationRequestDto rejectRequest(long accountRequestId) {
+        AccountRequest accountRequest = accountRequestRepository.findById(accountRequestId)
+                .orElseThrow(() -> new NotFoundException("AccountRequest not found with id " + accountRequestId));
+
+        accountRequest.setStatus(RequestStatus.REJECTED);
+        accountRequestRepository.save(accountRequest);
+
+        emailService.sendRegistrationRequestDeclineEmail(accountRequest.getUsername(), accountRequest.getEmail());
+
+        return new RejectRegistrationRequestDto("Registration request successfully rejected!");
+    }
+
 }
