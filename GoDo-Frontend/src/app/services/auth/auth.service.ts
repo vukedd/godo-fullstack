@@ -24,6 +24,19 @@ export class AuthService {
     return this.http.post(environment.apiUrl + '/auth/login', request);
   }
 
+  public getUserRole() {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      let token: string | null = this.getAccessToken();
+
+      if (token == null) return false;
+
+      let decodedToken = jwtDecode<MyJwtPayload>(token);
+      return decodedToken.role;
+    }
+
+    return null;
+  }
+
   setAccessToken(token: string) {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem('accessToken', token);
@@ -101,6 +114,8 @@ export class AuthService {
       return throwError(() => new Error('No refresh token available'));
     }
 
-    return this.http.get(environment.apiUrl + '/auth/refresh-token/' + refreshToken);
+    return this.http.get(
+      environment.apiUrl + '/auth/refresh-token/' + refreshToken
+    );
   }
 }
