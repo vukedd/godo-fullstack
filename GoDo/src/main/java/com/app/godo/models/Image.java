@@ -1,11 +1,14 @@
 package com.app.godo.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +27,7 @@ public class Image {
 
     @OneToOne
     @JoinColumn(name = "venue_id", referencedColumnName = "id")
+    @JsonBackReference
     private Venue venueImageOf;
 
     @OneToOne

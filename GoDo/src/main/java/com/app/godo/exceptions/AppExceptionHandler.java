@@ -66,10 +66,18 @@ public class AppExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<NotFoundException> handleNotFoundException(ValidationException ex) {
+    public ResponseEntity<NotFoundException> handleNotFoundException(NotFoundException ex) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         String errorMessage = ex.getMessage();
 
         return new ResponseEntity<>(new NotFoundException(errorMessage), status);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<RuntimeException> handleRuntimeException(RuntimeException ex) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        String errorMessage = ex.getMessage();
+
+        return new ResponseEntity<>(new RuntimeException(errorMessage), status);
     }
 }
