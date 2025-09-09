@@ -2,6 +2,8 @@ package com.app.godo.services.venue;
 
 import com.app.godo.dtos.venue.CreateVenueRequestDto;
 import com.app.godo.dtos.venue.VenueOverviewDto;
+import com.app.godo.exceptions.general.ConflictException;
+import com.app.godo.exceptions.general.ParseException;
 import com.app.godo.models.Image;
 import com.app.godo.models.Venue;
 import com.app.godo.repositories.venue.VenueRepository;
@@ -36,6 +38,10 @@ public class VenueService {
 
     @Transactional
     public VenueOverviewDto createVenue(CreateVenueRequestDto venueRequest, MultipartFile venueImage) {
+        Venue existingVenue = venueRepository.findVenueByName(venueRequest.getName());
+
+        if (existingVenue != null) { throw new ConflictException("A venue with the entered name already exists!"); }
+
         Venue venue = Venue.builder()
                 .name(venueRequest.getName())
                 .description(venueRequest.getDescription())
@@ -44,7 +50,6 @@ public class VenueService {
                 .averageRating(0)
                 .createdAt(LocalDate.from(LocalDateTime.now()))
                 .build();
-
 
         String path = "http://localhost:8080/uploads/" + fileStorageService.storeFile(venueImage);
 
@@ -64,7 +69,7 @@ public class VenueService {
         try {
             venue = objectMapper.readValue(venueJson, CreateVenueRequestDto.class);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error parsing venue JSON", e);
+            throw new ParseException("An expected error has occurred please try again in a moment!");
         }
 
         return venue;

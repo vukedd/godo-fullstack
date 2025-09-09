@@ -17,4 +17,5 @@ public interface VenueRepository extends JpaRepository<Venue, Long> {
     @Query("SELECT v FROM Venue v WHERE v.name LIKE CONCAT('%', :venueName, '%') AND v.address LIKE CONCAT('%', :venueAddress, '%') AND v.type = :venueType")
     Page<Venue> filterVenuesWithType(@Param("venueName") String name, @Param("venueAddress") String address, @Param("type") int venueType, Pageable pageable);
 
+    Venue findVenueByName(String name);
 }
