@@ -1,6 +1,7 @@
 package com.app.godo.exceptions;
 
 import com.app.godo.dtos.error.ErrorResponseDto;
+import com.app.godo.exceptions.general.ConflictException;
 import com.app.godo.exceptions.general.NotFoundException;
 import com.app.godo.exceptions.refreshToken.ValidationException;
 import com.app.godo.exceptions.registration.RegistrationException;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,10 +68,18 @@ public class AppExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<NotFoundException> handleNotFoundException(ValidationException ex) {
+    public ResponseEntity<NotFoundException> handleNotFoundException(NotFoundException ex) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         String errorMessage = ex.getMessage();
 
         return new ResponseEntity<>(new NotFoundException(errorMessage), status);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ConflictException> handleConflictException(ConflictException ex) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        String errorMessage = ex.getMessage();
+
+        return new ResponseEntity<>(new ConflictException(errorMessage), status);
     }
 }

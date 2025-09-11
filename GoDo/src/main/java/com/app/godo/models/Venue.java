@@ -1,9 +1,12 @@
 package com.app.godo.models;
 
+import com.app.godo.dtos.venue.VenueOverviewDto;
 import com.app.godo.enums.VenueType;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -12,6 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "venues")
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Venue {
@@ -37,7 +41,8 @@ public class Venue {
     @Column(nullable = false)
     private LocalDate createdAt;
 
-    @OneToOne
+    @OneToOne(mappedBy = "venueImageOf", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Image image;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")

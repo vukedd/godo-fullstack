@@ -3,6 +3,8 @@ import { AdminHubComponent } from './layout/admin/admin-hub/admin-hub.component'
 import { RegistrationRequestManagementComponent } from './layout/admin/registration-request-management/registration-request-management.component';
 import { AuthGuard } from './guards/auth-guard';
 import { RoleGuard } from './guards/role-guard';
+import { AddVenueComponent } from './layout/admin/add-venue/add-venue.component';
+import { ExploreVenuesPageComponent } from './layout/venue/explore-venues-page/explore-venues-page.component';
 
 export const routes: Routes = [
     {
@@ -22,5 +24,20 @@ export const routes: Routes = [
         data: {
             expectedRole: "ADMIN"
         }
+    },
+    {
+        title: "Add venue",
+        path: 'add-venue',
+        component: AddVenueComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: {
+            expectedRole: "ADMIN"
+        }
+    },
+    {
+        title: "Explore venues",
+        path: 'venue',
+        component: ExploreVenuesPageComponent,
+        canActivate: [AuthGuard],
     }
 ];

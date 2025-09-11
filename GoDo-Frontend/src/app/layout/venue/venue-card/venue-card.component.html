@@ -1,0 +1,12 @@
+<div class="border-2 border-gray-800 py-4 px-3 border-round-lg shadow-2 hover:border-gray-700 flex flex-column w-full h-3">
+    <div>
+        <img [src]="venue.imagePath" alt="Venue name" class="w-full ">
+    </div>
+    <div>
+        <h3>{{ venue.name }}</h3>
+    </div>
+    <div>
+        <h4 [style.color]="venueTypeColor()">{{ venueType }}</h4>
+    </div>
+    <button class="text-2xl w-full bg-primary border-none hover:bg-primary-200 border-round-lg"><i class="pi pi-info-circle"></i></button>
+</div>

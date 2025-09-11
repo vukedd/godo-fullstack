@@ -1,0 +1,28 @@
+<form class="flex justify-content-center align-items-center mt-8 mt-4 w-full" [formGroup]="addVenueForm">
+    <div class="flex flex-column justify-content-center align-items-center w-full lg:w-30rem">
+        <h1 class="text-primary">Add Venue</h1>
+        <div class="flex flex-column my-2 w-full">
+            <span>Name:</span>
+            <input pInputText autocomplete="off" class="w-full" class="my-2" formControlName="name" pTooltip="Name field can't be empty" />
+        </div>
+        <div class="flex flex-column my-2 w-full">
+            <span>Address:</span>
+            <input pInputText autocomplete="off" class="w-full" class="my-2" formControlName="address" pTooltip="Address field can't be empty" />
+        </div>
+        <div class="my-2 w-full">
+            <span>Description:</span>
+            <textarea rows="6" pTextarea style="resize: none" class="w-full text-white bg-black-alpha-10 border-gray-600 my-2" formControlName="description" pTooltip="Description field can't be empty"></textarea>
+        </div>
+        <div class="flex flex-column my-2 w-full">
+            <span>Venue type:</span>
+            <p-select optionLabel="name" placeholder="Select venue type" class="my-2" formControlName="type" [options]="venueTypes" pTooltip="Venue type must be selected" />
+        </div>
+        <div class="flex flex-column my-2 w-full">
+            <span>Venue image:</span>
+            <p-fileupload mode="basic" name="demo[]" chooseIcon="pi pi-upload" [customUpload]="true" accept="image/*" maxFileSize="1000000" [auto]="true" chooseLabel="Browse" (onSelect)="onUpload($event)" pTooltip="Venue image must be selected" />
+            <span class="text-gray-300">{{ this.selectedFile?.name }}</span>
+        </div>
+        <p-button class="py-6" [type]="'submit'" [disabled]="!isValid()" (click)="submitAddVenueForm()">Submit</p-button>
+    </div>
+</form>
+<p-toast></p-toast>
