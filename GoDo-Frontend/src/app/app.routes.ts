@@ -4,6 +4,7 @@ import { RegistrationRequestManagementComponent } from './layout/admin/registrat
 import { AuthGuard } from './guards/auth-guard';
 import { RoleGuard } from './guards/role-guard';
 import { AddVenueComponent } from './layout/admin/add-venue/add-venue.component';
+import { ExploreVenuesPageComponent } from './layout/venue/explore-venues-page/explore-venues-page.component';
 
 export const routes: Routes = [
     {
@@ -32,5 +33,11 @@ export const routes: Routes = [
         data: {
             expectedRole: "ADMIN"
         }
+    },
+    {
+        title: "Explore venues",
+        path: 'venue',
+        component: ExploreVenuesPageComponent,
+        canActivate: [AuthGuard],
     }
 ];

@@ -22,12 +22,11 @@ public class VenueController {
 
     @GetMapping
     public ResponseEntity<Page<VenueOverviewDto>> filterVenues(
-            @RequestParam(value = "name", defaultValue = "") String name,
-            @RequestParam(value = "address", defaultValue = "") String address,
+            @RequestParam(value = "filter", defaultValue = "") String filter,
             @RequestParam(value = "venueType", defaultValue = "-1") int venueType,
-            @PageableDefault(size = 4, sort = "name", direction = Sort.Direction.ASC) Pageable venuePage
+            @PageableDefault(size = 8, sort = "name", direction = Sort.Direction.ASC) Pageable venuePage
     ){
-        return ResponseEntity.ok(venueService.filterVenues(name, address, venueType, venuePage));
+        return ResponseEntity.ok(venueService.filterVenues(filter, venueType, venuePage));
     }
 
     @PostMapping(consumes = { "multipart/form-data" })

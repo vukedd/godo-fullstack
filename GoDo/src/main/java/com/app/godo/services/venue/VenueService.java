@@ -2,6 +2,7 @@ package com.app.godo.services.venue;
 
 import com.app.godo.dtos.venue.CreateVenueRequestDto;
 import com.app.godo.dtos.venue.VenueOverviewDto;
+import com.app.godo.enums.VenueType;
 import com.app.godo.exceptions.general.ConflictException;
 import com.app.godo.exceptions.general.ParseException;
 import com.app.godo.models.Image;
@@ -27,11 +28,15 @@ public class VenueService {
     private final FileStorageService fileStorageService;
     private final ObjectMapper objectMapper;
 
-    public Page<VenueOverviewDto> filterVenues(String name, String address, int venueType, Pageable pageable) {
+    public Page<VenueOverviewDto> filterVenues(String filter, int venueType, Pageable pageable) {
         Page<Venue> venues;
 
-        if (venueType == -1) { venues = venueRepository.filterVenues(name, address, pageable); }
-        else { venues = venueRepository.filterVenuesWithType(name, address, venueType, pageable); }
+        if (venueType == -1) {
+            venues = venueRepository.filterVenues(filter, filter, pageable);
+        }
+        else {
+            venues = venueRepository.filterVenuesWithType(filter, filter, VenueType.values()[venueType], pageable);
+        }
 
         return venues.map(VenueOverviewDto::fromEntity);
     }
