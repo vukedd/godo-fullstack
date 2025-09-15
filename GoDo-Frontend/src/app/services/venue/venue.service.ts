@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment.development';
 import { AddVenueRequest } from '../../models/venue/AddVenueRequest';
 import { Observable } from 'rxjs';
 import { FilterVenueDto } from '../../models/venue/FilterVenueDto';
+import { UpdateVenueDto } from '../../models/venue/UpdateVenueDto';
 
 @Injectable({
   providedIn: 'root',
@@ -38,9 +39,19 @@ export class VenueService {
     if (filterVenueDto.venueType != null) {
       queryParameters += '&venueType=' + filterVenueDto.venueType.toString();
     }
-
-    console.log(queryParameters);
-
+    
     return this.http.get(environment.apiUrl + '/venue' + queryParameters);
+  }
+
+  public findVenueById(venueId: string) : Observable<any> {
+    return this.http.get(`${environment.apiUrl}/venue/${venueId}`);
+  }
+
+  public updateVenue(venueId: string, body: UpdateVenueDto) : Observable<any> {
+    return this.http.put(`${environment.apiUrl}/venue/${venueId}`, body)
+  }
+
+  public deleteVenue(venueId: string) : Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/venue/${venueId}`);
   }
 }

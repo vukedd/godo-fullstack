@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { VenueOverviewDto } from '../../../models/venue/VenueOverviewDto';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-venue-card',
-  imports: [ButtonModule],
+  imports: [ButtonModule, RouterModule],
   templateUrl: './venue-card.component.html',
   styleUrl: './venue-card.component.css',
 })

@@ -3,11 +3,11 @@
         <h1 class="text-primary">Add Venue</h1>
         <div class="flex flex-column my-2 w-full">
             <span>Name:</span>
-            <input pInputText autocomplete="off" class="w-full" class="my-2" formControlName="name" pTooltip="Name field can't be empty" />
+            <input pInputText autocomplete="off" class="w-full my-2" formControlName="name" pTooltip="Name field can't be empty" />
         </div>
         <div class="flex flex-column my-2 w-full">
             <span>Address:</span>
-            <input pInputText autocomplete="off" class="w-full" class="my-2" formControlName="address" pTooltip="Address field can't be empty" />
+            <input pInputText autocomplete="off" class="w-full my-2" formControlName="address" pTooltip="Address field can't be empty" />
         </div>
         <div class="my-2 w-full">
             <span>Description:</span>
@@ -25,4 +25,3 @@
         <p-button class="py-6" [type]="'submit'" [disabled]="!isValid()" (click)="submitAddVenueForm()">Submit</p-button>
     </div>
 </form>
-<p-toast></p-toast>

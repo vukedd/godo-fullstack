@@ -1,9 +1,11 @@
 package com.app.godo.services.venue;
 
 import com.app.godo.dtos.venue.CreateVenueRequestDto;
+import com.app.godo.dtos.venue.UpdateVenueDto;
 import com.app.godo.dtos.venue.VenueOverviewDto;
 import com.app.godo.enums.VenueType;
 import com.app.godo.exceptions.general.ConflictException;
+import com.app.godo.exceptions.general.NotFoundException;
 import com.app.godo.exceptions.general.ParseException;
 import com.app.godo.models.Image;
 import com.app.godo.models.Venue;
@@ -78,5 +80,33 @@ public class VenueService {
         }
 
         return venue;
+    }
+
+    public VenueOverviewDto findVenueById(long venueId) {
+        Venue venue = venueRepository.findVenueById(venueId)
+                .orElseThrow(() -> new NotFoundException("The venue you were looking for can't be found"));
+
+        return VenueOverviewDto.fromEntity(venue);
+    }
+
+    public UpdateVenueDto updateVenue(long venueId, UpdateVenueDto updateVenueDto) {
+        Venue venue = venueRepository.findVenueById(venueId)
+                .orElseThrow(() -> new NotFoundException("The venue you were looking for can't be found"));
+
+        venue.setName(updateVenueDto.getName());
+        venue.setAddress(updateVenueDto.getAddress());
+        venue.setDescription(updateVenueDto.getDescription());
+        venue.setType(updateVenueDto.getVenueType());
+
+        venueRepository.save(venue);
+
+        return UpdateVenueDto.fromEntity(venue);
+    }
+
+    public void deleteVenue(long venueId) {
+        Venue venue = venueRepository.findVenueById(venueId)
+                .orElseThrow(() -> new NotFoundException("The venue you were looking for can't be found"));
+
+        venueRepository.delete(venue);
     }
 }

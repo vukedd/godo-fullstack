@@ -1,7 +1,7 @@
 export enum VenueType {
-    CULTURAL_CENTER = "Cultural center",
+    CULTURAL_CENTER = "Cultural Center",
     BAR = "Bar",
-    NIGHT_CLUB = "Night club",
+    NIGHT_CLUB = "Night Club",
     RESTAURANT = "Restaurant",
     THEATER = "Theater",
     ROOFTOP = "Rooftop",
