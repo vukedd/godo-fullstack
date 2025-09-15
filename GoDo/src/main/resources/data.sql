@@ -1,5 +1,7 @@
 INSERT INTO users(username, email, password, member_since, date_of_birth, phone_number, address, city, role) VALUES('admin', 'admin@gmail.com', '$2a$10$luqEVAdjiGEVJb.lW5qbYuL.yAkYPZdJxZkKz5lGlUaQZzJFhi.ju', '2025-06-06', '2002-05-05', '060012345678', 'Miloje Mili 19', 'Bogojevo', 'ADMIN');
 -- Admin123.
+INSERT INTO users(username, email, password, member_since, date_of_birth, phone_number, address, city, role) VALUES('vukasin', 'vukasin@gmail.com', '$2a$10$luqEVAdjiGEVJb.lW5qbYuL.yAkYPZdJxZkKz5lGlUaQZzJFhi.ju', '2025-06-06', '2002-05-05', '060012345679', 'Miloje Milic 19', 'Bogojevo', 'MEMBER');
+
 
 INSERT INTO venues (name, description, address, average_rating, type, created_at) VALUES
                                                                                           ('The Grand Oak Theater', 'Historic theater showing classic films and live performances.', '123 Broadway, Starlight City', 4.8, 4, '2022-01-15'),

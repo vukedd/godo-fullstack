@@ -102,4 +102,11 @@ public class VenueService {
 
         return UpdateVenueDto.fromEntity(venue);
     }
+
+    public void deleteVenue(long venueId) {
+        Venue venue = venueRepository.findVenueById(venueId)
+                .orElseThrow(() -> new NotFoundException("The venue you were looking for can't be found"));
+
+        venueRepository.delete(venue);
+    }
 }

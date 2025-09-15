@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static org.springframework.http.ResponseEntity.noContent;
+
 @RestController
 @RequestMapping("/api/venue")
 @RequiredArgsConstructor
@@ -47,5 +49,11 @@ public class VenueController {
     @PutMapping("/{id}")
     public ResponseEntity<UpdateVenueDto> updateVenue(@PathVariable long id, @RequestBody UpdateVenueDto updateVenueDto) {
         return ResponseEntity.ok(venueService.updateVenue(id, updateVenueDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteVenue(@PathVariable long id) {
+        venueService.deleteVenue(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -45,12 +45,12 @@ public class Venue {
     @JsonManagedReference
     private Image image;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue", orphanRemoval = true)
     private List<Review> review;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue", orphanRemoval = true)
     private List<Manages> manages;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue", orphanRemoval = true)
     private List<Event> events;
 }

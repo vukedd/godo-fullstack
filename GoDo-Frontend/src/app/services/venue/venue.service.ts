@@ -50,4 +50,8 @@ export class VenueService {
   public updateVenue(venueId: string, body: UpdateVenueDto) : Observable<any> {
     return this.http.put(`${environment.apiUrl}/venue/${venueId}`, body)
   }
+
+  public deleteVenue(venueId: string) : Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/venue/${venueId}`);
+  }
 }
