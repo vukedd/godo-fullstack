@@ -15,7 +15,6 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { VenueType } from '../../../enums/venueType';
 import { TextareaModule } from 'primeng/textarea';
 import { TooltipModule } from 'primeng/tooltip';
-import { HttpClient } from '@angular/common/http';
 import { VenueService } from '../../../services/venue/venue.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';

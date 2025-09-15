@@ -9,14 +9,31 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface VenueRepository extends JpaRepository<Venue, Long> {
 
-    @Query("SELECT v FROM Venue v WHERE v.name LIKE CONCAT('%', :venueName, '%') OR v.address LIKE CONCAT('%', :venueAddress, '%')")
-    Page<Venue> filterVenues(@Param("venueName") String name, @Param("venueAddress") String address, Pageable pageable);
+    @Query("""
+    SELECT v FROM Venue v
+    WHERE LOWER(v.name) LIKE CONCAT('%', LOWER(:venueName), '%')
+       OR LOWER(v.address) LIKE CONCAT('%', LOWER(:venueAddress), '%')
+    """)
+    Page<Venue> filterVenues(@Param("venueName") String name,
+                             @Param("venueAddress") String address,
+                             Pageable pageable);
 
-    @Query("SELECT v FROM Venue v WHERE (v.name LIKE CONCAT('%', :venueName, '%') OR v.address LIKE CONCAT('%', :venueAddress, '%')) AND v.type = :venueType")
-    Page<Venue> filterVenuesWithType(@Param("venueName") String name, @Param("venueAddress") String address, @Param("venueType") VenueType venueType, Pageable pageable);
+    @Query("""
+    SELECT v FROM Venue v
+    WHERE (LOWER(v.name) LIKE CONCAT('%', LOWER(:venueName), '%')
+        OR LOWER(v.address) LIKE CONCAT('%', LOWER(:venueAddress), '%'))
+      AND v.type = :venueType
+    """)
+    Page<Venue> filterVenuesWithType(@Param("venueName") String name,
+                                     @Param("venueAddress") String address,
+                                     @Param("venueType") VenueType venueType,
+                                     Pageable pageable);
 
     Venue findVenueByName(String name);
+    Optional<Venue> findVenueById(long id);
 }

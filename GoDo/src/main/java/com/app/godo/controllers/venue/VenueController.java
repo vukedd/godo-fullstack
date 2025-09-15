@@ -2,6 +2,7 @@ package com.app.godo.controllers.venue;
 
 
 import com.app.godo.dtos.venue.CreateVenueRequestDto;
+import com.app.godo.dtos.venue.UpdateVenueDto;
 import com.app.godo.dtos.venue.VenueOverviewDto;
 import com.app.godo.models.Venue;
 import com.app.godo.services.venue.VenueService;
@@ -36,5 +37,15 @@ public class VenueController {
 
         CreateVenueRequestDto createVenueRequest = venueService.convertToCreateVenueRequest(venueJson);
         return ResponseEntity.ok(venueService.createVenue(createVenueRequest, imageFile));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<VenueOverviewDto> getVenueById(@PathVariable long id) {
+          return ResponseEntity.ok(venueService.findVenueById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UpdateVenueDto> updateVenue(@PathVariable long id, @RequestBody UpdateVenueDto updateVenueDto) {
+        return ResponseEntity.ok(venueService.updateVenue(id, updateVenueDto));
     }
 }

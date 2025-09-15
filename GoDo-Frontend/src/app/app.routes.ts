@@ -5,6 +5,7 @@ import { AuthGuard } from './guards/auth-guard';
 import { RoleGuard } from './guards/role-guard';
 import { AddVenueComponent } from './layout/admin/add-venue/add-venue.component';
 import { ExploreVenuesPageComponent } from './layout/venue/explore-venues-page/explore-venues-page.component';
+import { VenuePageComponent } from './layout/venue/venue-page/venue-page.component';
 
 export const routes: Routes = [
     {
@@ -38,6 +39,12 @@ export const routes: Routes = [
         title: "Explore venues",
         path: 'venue',
         component: ExploreVenuesPageComponent,
+        canActivate: [AuthGuard],
+    },
+    {
+        title: "Venue",
+        path: 'venue/:id',
+        component: VenuePageComponent,
         canActivate: [AuthGuard],
     }
 ];
