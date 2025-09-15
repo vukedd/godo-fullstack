@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
     Optional<RefreshToken> findByIdAndExpiresAtAfter(Long id, Instant date);
-
+    Optional<RefreshToken> findRefreshTokenById(long id);
 }

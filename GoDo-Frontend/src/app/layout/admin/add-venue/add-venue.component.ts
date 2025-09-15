@@ -32,9 +32,8 @@ import { Toast } from "primeng/toast";
     ButtonModule,
     FileUploadModule,
     TextareaModule,
-    TooltipModule,
-    Toast
-],
+    TooltipModule
+  ],
   templateUrl: './add-venue.component.html',
   styleUrl: './add-venue.component.css',
 })

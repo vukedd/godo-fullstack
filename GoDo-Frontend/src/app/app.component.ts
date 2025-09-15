@@ -13,8 +13,5 @@ import { ToastPositionService } from './services/toast-position/toast-position.s
 export class AppComponent {
   title = 'GoDo-Frontend';
 
-  /**
-   *
-   */
   constructor(public toastPositionService: ToastPositionService) {}
 }
