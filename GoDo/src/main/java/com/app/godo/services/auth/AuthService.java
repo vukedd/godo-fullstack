@@ -4,6 +4,7 @@ import com.app.godo.dtos.accountRequest.AccountRequestDto;
 import com.app.godo.dtos.accountRequest.AccountRequestSuccessDto;
 import com.app.godo.dtos.auth.AuthenticationRequestDto;
 import com.app.godo.dtos.auth.AuthenticationResponseDto;
+import com.app.godo.exceptions.general.NotFoundException;
 import com.app.godo.exceptions.refreshToken.ValidationException;
 import com.app.godo.exceptions.registration.RegistrationException;
 import com.app.godo.mappers.AccountRequestMapper;
@@ -93,5 +94,13 @@ public class AuthService {
 
         final var newAccessToken = jwtService.generateToken(refreshTokenEntity.getUser());
         return new AuthenticationResponseDto(newAccessToken, refreshTokenId);
+    }
+
+
+    public void logout(long refreshTokenId) {
+        RefreshToken refreshToken = refreshTokenRepository.findRefreshTokenById(refreshTokenId)
+                .orElseThrow(() -> new NotFoundException("Refresh token not found"));
+
+        refreshTokenRepository.delete(refreshToken);
     }
 }

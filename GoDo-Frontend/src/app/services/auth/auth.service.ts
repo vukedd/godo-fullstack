@@ -78,9 +78,12 @@ export class AuthService {
   }
 
   logout() {
+    let refreshTokenId: any = "";
     if (typeof window !== 'undefined' && window.localStorage) {
+      refreshTokenId = localStorage.getItem("refreshToken");
       localStorage.clear();
     }
+    return this.http.delete(`${environment.apiUrl}/auth/logout/${refreshTokenId}`);
   }
 
   getUsername() {
