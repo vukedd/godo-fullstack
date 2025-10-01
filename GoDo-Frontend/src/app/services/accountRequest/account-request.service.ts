@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { enableDebugTools } from '@angular/platform-browser';
+import { RejectRequestDto } from '../../models/accountRequest/rejectRequestDto';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class AccountRequestService {
     return this.http.post(environment.apiUrl + "/account-request/approve", {requestId: requestId});
   }
 
-  public rejectPendingAccountRequest(requestId: number): Observable<any> {
-    return this.http.put(environment.apiUrl + "/account-request/reject", {requestId: requestId});
+  public rejectPendingAccountRequest(rejectRequestDto: RejectRequestDto): Observable<any> {
+    return this.http.put(environment.apiUrl + "/account-request/reject", rejectRequestDto);
   }
 }

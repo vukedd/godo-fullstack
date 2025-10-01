@@ -1,9 +1,11 @@
 package com.app.godo.services.accountRequest;
 
 
+import com.app.godo.dtos.accountRequest.RejectRequestDto;
 import com.app.godo.dtos.accountRequest.ApprovedRegistrationRequestDto;
 import com.app.godo.dtos.accountRequest.PendingAccountRequestDto;
 import com.app.godo.dtos.accountRequest.RejectRegistrationRequestDto;
+import com.app.godo.enums.ProfileStatus;
 import com.app.godo.enums.RequestStatus;
 import com.app.godo.exceptions.general.NotFoundException;
 import com.app.godo.models.AccountRequest;
@@ -54,6 +56,7 @@ public class AccountRequestService {
                 .username(accountRequest.getUsername())
                 .password(accountRequest.getPassword())
                 .email(accountRequest.getEmail())
+                .profileStatus(ProfileStatus.PENDING)
                 .memberSince(LocalDate.from(LocalDateTime.now())).build();
 
         userRepository.save(newUser);
@@ -63,11 +66,12 @@ public class AccountRequestService {
         return new ApprovedRegistrationRequestDto("Registration request successfully approved!");
     }
 
-    public RejectRegistrationRequestDto rejectRequest(long accountRequestId) {
-        AccountRequest accountRequest = accountRequestRepository.findById(accountRequestId)
-                .orElseThrow(() -> new NotFoundException("AccountRequest not found with id " + accountRequestId));
+    public RejectRegistrationRequestDto rejectRequest(RejectRequestDto rejectRequestDto) {
+        AccountRequest accountRequest = accountRequestRepository.findById(rejectRequestDto.getRequestId())
+                .orElseThrow(() -> new NotFoundException("AccountRequest not found with id " + rejectRequestDto.getRequestId()));
 
         accountRequest.setStatus(RequestStatus.REJECTED);
+        accountRequest.setRejectionReason(rejectRequestDto.getReason());
         accountRequestRepository.save(accountRequest);
 
         emailService.sendRegistrationRequestDeclineEmail(accountRequest.getUsername(), accountRequest.getEmail());

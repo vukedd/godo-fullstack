@@ -19,11 +19,14 @@ public class JwtService {
 
     public String generateToken(final User user) {
         String role = user.getRole();
+        String profileStatus = user.getProfileStatus().toString();
+
         final var claimsSet = JwtClaimsSet.builder()
                 .subject(user.getUsername())
                 .issuer(issuer)
                 .expiresAt(Instant.now().plus(ttl))
                 .claim("role", role)
+                .claim("status", profileStatus)
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet))

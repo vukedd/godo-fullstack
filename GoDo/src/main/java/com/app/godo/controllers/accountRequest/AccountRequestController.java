@@ -1,9 +1,6 @@
 package com.app.godo.controllers.accountRequest;
 
-import com.app.godo.dtos.accountRequest.ApproveRequestDto;
-import com.app.godo.dtos.accountRequest.ApprovedRegistrationRequestDto;
-import com.app.godo.dtos.accountRequest.PendingAccountRequestDto;
-import com.app.godo.dtos.accountRequest.RejectRegistrationRequestDto;
+import com.app.godo.dtos.accountRequest.*;
 import com.app.godo.services.accountRequest.AccountRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +25,7 @@ public class AccountRequestController {
     }
 
     @PutMapping("/reject")
-    public ResponseEntity<RejectRegistrationRequestDto> rejectPendingRequest(@RequestBody ApproveRequestDto approveRequest) {
-        return ResponseEntity.ok(accountRequestService.rejectRequest(approveRequest.getRequestId()));
+    public ResponseEntity<RejectRegistrationRequestDto> rejectPendingRequest(@RequestBody RejectRequestDto approveRequest) {
+        return ResponseEntity.ok(accountRequestService.rejectRequest(approveRequest));
     }
 }

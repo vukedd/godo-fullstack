@@ -1,0 +1,93 @@
+<div class="mt-8 flex lg:flex-row flex-column justify-content-evenly p-4 mx-4">
+  <div class="surface-card shadow-2 border-round p-4 md:p-5">
+    <div class="border-bottom-1 surface-border pb-4 mb-5">
+      <h2 class="text-2xl font-bold m-0 mb-1">Profile Details</h2>
+      <p class="text-color-secondary mt-0">
+        Complete your profile details below.
+      </p>
+    </div>
+
+    <form [formGroup]="profileDetailsForm">
+      <div class="formgrid grid">
+        <div class="field col-12 md:col-6 flex flex-column">
+          <label>Username:</label>
+          <input type="text" pInputText formControlName="username" />
+        </div>
+
+        <div class="field col-12 md:col-6 flex flex-column">
+          <label>E-mail:</label>
+          <input type="text" pInputText formControlName="email" />
+        </div>
+
+        <div class="field col-12 md:col-6 flex flex-column">
+          <label for="dateOfBirth" class="mb-2">Date of birth:</label>
+          <p-datepicker
+            id="dateOfBirth"
+            placeholder="Enter date of birth"
+            formControlName="dateOfBirth"
+            [maxDate]="maxDate"
+            [defaultDate]="maxDate"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+          ></p-datepicker>
+        </div>
+
+        <div class="field col-12 md:col-6 flex flex-column">
+          <label>City:</label>
+          <input
+            type="text"
+            pInputText
+            placeholder="Enter city"
+            formControlName="city"
+          />
+        </div>
+
+        <div class="field col-12 md:col-6 flex flex-column">
+          <label>Address:</label>
+          <input
+            type="text"
+            pInputText
+            placeholder="Enter address"
+            formControlName="address"
+          />
+        </div>
+        <div class="field col-12 md:col-6 flex flex-column">
+          <label for="phoneNumber" class="mb-2">Phone number:</label>
+          <p-inputmask
+            id="phoneNumber"
+            mask="(069) 999-9999?"
+            placeholder="(06_) ___-____"
+            formControlName="phoneNumber"
+            styleClass="w-full"
+            [unmask]="true"
+          ></p-inputmask>
+        </div>
+        <div class="flex flex-column justify-content-start align-items-start my-2 w-full">
+          <span class="my-2">Profile picture:</span>
+          <p-fileupload
+            mode="basic"
+            name="demo[]"
+            chooseIcon="pi pi-upload"
+            [customUpload]="true"
+            accept="image/*"
+            maxFileSize="1000000"
+            [auto]="true"
+            class="my-2"
+            chooseLabel="Browse"
+            (onSelect)="onUpload($event)"
+            pTooltip="Profile picture must be selected"
+          />
+          <span class="text-gray-300">{{ this.selectedFile?.name }}</span>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-5 justify-content-end">
+        <p-button
+          label="Submit"
+          [disabled]="isBtnDisabled()"
+          (onClick)="submitForm()"
+        ></p-button>
+      </div>
+    </form>
+  </div>
+</div>

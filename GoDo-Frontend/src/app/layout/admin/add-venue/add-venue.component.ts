@@ -99,7 +99,7 @@ export class AddVenueComponent {
         )
         .subscribe({
           next: (response) => {
-            this.router.navigate(['admin-hub']);
+            this.router.navigate(['dashboard']);
             this.messageService.add({
               severity: 'success',
               summary: 'Venue succesfully added!'

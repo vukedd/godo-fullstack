@@ -64,7 +64,14 @@ export class LoginFormComponent {
           this.loading = false;
           this.loginForm.reset();
           this.loginSuccess.emit();
-          this.router.navigate(['']);
+
+          let role = this.authService.getUserRole();
+          if (role == "ADMIN") {
+            this.router.navigate(['dashboard']);
+            return
+          } 
+
+          this.router.navigate(['dashboard'])
         },
         error: (error) => {
           let message: string = "";

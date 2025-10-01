@@ -121,4 +121,13 @@ export class AuthService {
       environment.apiUrl + '/auth/refresh-token/' + refreshToken
     );
   }
+
+  isProfilePending(): boolean {
+    let token: string | null = this.getAccessToken();
+
+    if (token == null) return false;
+
+    let decodedToken = jwtDecode<MyJwtPayload>(token);
+    return decodedToken.status == 'PENDING';
+  }
 }

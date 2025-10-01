@@ -1,5 +1,6 @@
 package com.app.godo.models;
 
+import com.app.godo.enums.ProfileStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
@@ -49,7 +50,11 @@ public class User {
     @Column(name = "city", nullable = true)
     private String city;
 
-    @OneToOne
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "profileStatus", nullable = false)
+    private ProfileStatus profileStatus;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Image profileImage;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "manager")

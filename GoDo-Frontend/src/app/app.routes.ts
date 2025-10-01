@@ -1,21 +1,20 @@
 import { Routes } from '@angular/router';
-import { AdminHubComponent } from './layout/admin/admin-hub/admin-hub.component';
 import { RegistrationRequestManagementComponent } from './layout/admin/registration-request-management/registration-request-management.component';
 import { AuthGuard } from './guards/auth-guard';
 import { RoleGuard } from './guards/role-guard';
 import { AddVenueComponent } from './layout/admin/add-venue/add-venue.component';
 import { ExploreVenuesPageComponent } from './layout/venue/explore-venues-page/explore-venues-page.component';
 import { VenuePageComponent } from './layout/venue/venue-page/venue-page.component';
+import { DashboardComponent } from './layout/dashboard-related/dashboard/dashboard.component';
+import { ProfileStatusGuard } from './guards/profile-status-guard';
+import { CompleteProfileDetailsFormComponent } from './layout/forms/complete-profile-details-form/complete-profile-details-form.component';
 
 export const routes: Routes = [
     {
-        title: "Admin hub",
-        path: 'admin-hub',
-        component: AdminHubComponent,
-        canActivate: [AuthGuard, RoleGuard],
-        data: {
-            expectedRole: "ADMIN"
-        }
+        title: "Dashboard",
+        path: 'dashboard',
+        component: DashboardComponent,
+        canActivate: [AuthGuard, ProfileStatusGuard],
     },
     {
         title: "Registration request management",
@@ -39,12 +38,18 @@ export const routes: Routes = [
         title: "Explore venues",
         path: 'venue',
         component: ExploreVenuesPageComponent,
-        canActivate: [AuthGuard],
+        canActivate: [AuthGuard, ProfileStatusGuard],
     },
     {
         title: "Venue",
         path: 'venue/:id',
         component: VenuePageComponent,
-        canActivate: [AuthGuard],
+        canActivate: [AuthGuard, ProfileStatusGuard],
+    },
+    {
+        title: 'Finish profile',
+        path: 'finish-profile',
+        component: CompleteProfileDetailsFormComponent,
+        canActivate: [AuthGuard]
     }
 ];

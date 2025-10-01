@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -20,7 +21,7 @@ public class FileStorageService {
 
     public String storeFile(MultipartFile file) {
         String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
-        String uniqueFilename = UUID.randomUUID().toString() + "_" + originalFilename;
+        String uniqueFilename = UUID.randomUUID() + "_" + originalFilename;
 
         try {
             Path targetLocation = this.uploadDir.resolve(uniqueFilename);
