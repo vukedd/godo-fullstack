@@ -41,27 +41,20 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.authService.isLoggedIn()) {
-      this.items = [
-        {
-          label: `${this.authService.getUsername()}`,
-          icon: PrimeIcons.USER,
-          items: [
-            {
-              label: 'Profile',
-              icon: 'pi pi-user',
-              routerLink: '',
-            },
-            {
-              label: 'Logout',
-              icon: PrimeIcons.SIGN_OUT,
-              command: () => {
-                this.logout();
-              },
-            },
-          ],
-        },
-      ];
+      this.setupUserMenu();
     }
+  }
+
+  // navigateToDashboard() {
+  //   let role = this.authService.getUserRole();
+
+  //   if (role == "ADMIN") {
+  //     this.router.navigate(['dashboard'])
+  //   } else
+  // }
+
+  isPending() {
+    return this.authService.isProfilePending()
   }
 
   toggleTheme() {
@@ -94,6 +87,7 @@ export class HeaderComponent implements OnInit {
   handleLoginSuccess(): void {
     this.isLogin = false;
     this.isRegister = false;
+    this.setupUserMenu();
     this.router.navigate(['/dashboard']);
   }
 
@@ -124,6 +118,32 @@ export class HeaderComponent implements OnInit {
   logout() {
     this.authService.logout().subscribe();
     this.router.navigate(['']);
+    this.items = undefined;
     return;
   }
+
+  private setupUserMenu(): void {
+  if (this.authService.isLoggedIn()) {
+    this.items = [
+      {
+        label: this.authService.getUsername(),
+        styleClass: 'font-bold px-3 py-2' 
+      },
+      {
+        label: 'Profile',
+        icon: 'pi pi-user',
+        routerLink: '/profile', 
+      },
+      {
+        label: 'Logout',
+        icon: PrimeIcons.SIGN_OUT,
+        command: () => {
+          this.logout();
+        },
+      },
+    ];
+  } else {
+    this.items = undefined;
+  }
+}
 }

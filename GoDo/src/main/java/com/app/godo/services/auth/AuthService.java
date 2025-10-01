@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,8 +49,8 @@ public class AuthService {
             throw new RegistrationException("The email you've entered is already taken!", RegistrationException.ErrorType.EMAIL_TAKEN);
         }
 
-        User userWithSameUsername = userRepository.findByUsername(accountRequestDto.getUsername());
-        if (userWithSameUsername != null) {
+        Optional<User> userWithSameUsername = userRepository.findByUsername(accountRequestDto.getUsername());
+        if (userWithSameUsername.isPresent()) {
             throw new RegistrationException("The username you've entered is already taken!", RegistrationException.ErrorType.USERNAME_TAKEN);
         }
 
@@ -74,7 +75,7 @@ public class AuthService {
 
         final var authentication = authenticationManager.authenticate(authToken);
 
-        var userEntity = userRepository.findByUsername(request.getUsername());
+        var userEntity = userRepository.findByUsername(request.getUsername()).get();
 
         final var token = jwtService.generateToken(userEntity);
 

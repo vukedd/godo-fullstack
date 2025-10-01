@@ -4,7 +4,6 @@ import com.app.godo.dtos.accountRequest.AccountRequestDto;
 import com.app.godo.dtos.accountRequest.AccountRequestSuccessDto;
 import com.app.godo.dtos.auth.AuthenticationRequestDto;
 import com.app.godo.dtos.auth.AuthenticationResponseDto;
-import com.app.godo.dtos.auth.LogoutRequestDto;
 import com.app.godo.repositories.auth.RefreshTokenRepository;
 import com.app.godo.services.auth.AuthService;
 import jakarta.validation.Valid;

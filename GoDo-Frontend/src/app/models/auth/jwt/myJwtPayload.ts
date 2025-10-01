@@ -3,4 +3,5 @@ export interface MyJwtPayload {
   sub: string;
   exp: number;
   role: string;
+  status: string;
 }

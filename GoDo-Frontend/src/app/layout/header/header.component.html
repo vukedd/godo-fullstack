@@ -1,11 +1,10 @@
 <!-- PC -->
 <div class="justify-content-between border-bottom-1 border-primary pt-2 pb-2 align-items-center px-3 fixed top-0 left-0 right-0 bg-black-alpha-90 hidden lg:flex z-5">
     <span class="text-4xl text-primary">GoDo</span>
-    <div *ngIf="isLoggedIn()">
-        <p-button [link]="true" styleClass="text-xl">Dashboard</p-button>
+    <div *ngIf="isLoggedIn() && !isPending()">
+        <p-button [link]="true" styleClass="text-xl" [routerLink]="'/dashboard'">Dashboard</p-button>
         <p-button [link]="true" styleClass="text-xl">Events</p-button>
         <p-button [link]="true" styleClass="text-xl" [routerLink]="'/venue'">Venues</p-button>
-        <p-button [link]="true" [routerLink]="'/admin-hub'" styleClass="text-xl" *ngIf="isAdmin()">Admin hub</p-button>
     </div>
     <div *ngIf="!isLoggedIn()"></div>
     <div class="flex justify-content-center align-items-center">
@@ -30,25 +29,26 @@
 
 <p-sidebar [(visible)]="sidebarVisible" position="left" styleClass="app-sidebar">
     <div class="flex flex-column justify-content-between h-full">
-        <div class="flex flex-column justify-content-center align-items-center">
-            <p-button [link]="true" styleClass="font-bold text-3xl">Dashboard</p-button>
+        <div class="flex flex-column justify-content-center align-items-center" *ngIf="!isPending()">
+            <p-button [link]="true" styleClass="font-bold text-3xl" [routerLink]="'/dashboard'">Dashboard</p-button>
             <p-button [link]="true" styleClass="font-bold text-3xl">Events</p-button>
             <p-button [link]="true" styleClass="font-bold text-3xl" [routerLink]="'/venue'">Venues</p-button>
+        </div>
+        <div  *ngIf="isPending()">
 
-            <p-button [link]="true" [routerLink]="'/admin-hub'" styleClass="font-bold text-3xl" *ngIf="isAdmin()">Admin hub</p-button>
         </div>
         <div class="flex flex-column gap-3 px-4 pb-4">
-            <p-button label="Profile" icon="pi pi-user" styleClass="p-button-lg w-full"></p-button>
+            <p-button label="Profile" icon="pi pi-user" styleClass="p-button-lg w-full" *ngIf="!isPending()"></p-button>
             <p-button label="Logout" icon="pi pi-sign-out" [outlined]="true" styleClass="p-button-lg w-full" (click)="logout()"></p-button>
         </div>
     </div>
 </p-sidebar>
 
 <!-- Log in, register dialog -->
-<p-dialog header="Log in" [modal]="true" [(visible)]="isLogin" [style]="{ width: '25rem' }">
+<p-dialog header="Log in" [modal]="true" [(visible)]="isLogin" [style]="{ width: '25rem' }" draggable="false">
     <app-login-form (switchToRegister)="handleSwitchToRegister()" (loginSuccess)="handleLoginSuccess()"></app-login-form>
 </p-dialog>
 
-<p-dialog header="Register" [modal]="true" [(visible)]="isRegister" [style]="{ width: '25rem' }">
+<p-dialog header="Register" [modal]="true" [(visible)]="isRegister" [style]="{ width: '25rem' }" draggable="false">
     <app-register-form (switchToLogin)="handleSwitchToLogin()" (registerSuccess)="handleRegisterSuccess()"></app-register-form>
 </p-dialog>

@@ -18,10 +18,8 @@ public class JpaUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String username)
             throws UsernameNotFoundException {
 
-        final var user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException(username);
-        }
+        final var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
 
         return User.builder().username(user.getUsername()).password(user.getPassword()).roles("USER").build();
     }

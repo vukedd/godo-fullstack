@@ -1,0 +1,7 @@
+<div class="mt-8 flex lg:flex-row flex-column justify-content-evenly p-4 mx-4">
+    <div *ngFor="let overview of this.managementOverviewList">
+        <p>{{ overview.id }}</p>
+        <p>{{ overview.manager }}</p>
+        <p>{{ overview.venue.name }}</p>
+    </div>
+</div>  

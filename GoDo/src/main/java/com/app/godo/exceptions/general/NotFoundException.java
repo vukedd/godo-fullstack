@@ -1,6 +1,5 @@
 package com.app.godo.exceptions.general;
 
-import com.app.godo.exceptions.refreshToken.ValidationException;
 import lombok.Getter;
 
 @Getter
