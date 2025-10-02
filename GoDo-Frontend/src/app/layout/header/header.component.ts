@@ -122,26 +122,33 @@ export class HeaderComponent implements OnInit {
     return;
   }
 
-  private setupUserMenu(): void {
+private setupUserMenu(): void {
   if (this.authService.isLoggedIn()) {
-    this.items = [
+    const menuItems: MenuItem[] = [
       {
         label: this.authService.getUsername(),
-        styleClass: 'font-bold px-3 py-2' 
-      },
-      {
-        label: 'Profile',
-        icon: 'pi pi-user',
-        routerLink: '/profile', 
-      },
-      {
-        label: 'Logout',
-        icon: PrimeIcons.SIGN_OUT,
-        command: () => {
-          this.logout();
-        },
+        styleClass: 'font-bold px-3 py-2'
       },
     ];
+
+    if (!this.authService.isProfilePending()) {
+      menuItems.splice(1, 0, {
+        label: 'Profile',
+        icon: 'pi pi-user',
+        routerLink: '/profile',
+      });
+    }
+
+    menuItems.push({
+      label: 'Logout',
+      icon: PrimeIcons.SIGN_OUT,
+      command: () => {
+        this.logout();
+      },
+    });
+
+    this.items = menuItems;
+
   } else {
     this.items = undefined;
   }

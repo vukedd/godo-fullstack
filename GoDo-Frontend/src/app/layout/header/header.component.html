@@ -7,13 +7,13 @@
         <p-button [link]="true" styleClass="text-xl" [routerLink]="'/venue'">Venues</p-button>
     </div>
     <div *ngIf="!isLoggedIn()"></div>
-    <div class="flex justify-content-center align-items-center">
+    <div #menuContainer class="flex justify-content-center align-items-center">
         <p-button styleClass="text-xl" (click)="openLoginModal()" *ngIf="!isLoggedIn()">Log in</p-button>
         <p-button *ngIf="isLoggedIn()" (click)="menu.toggle($event)">
             <span class="pi pi-user mr-10"></span>
             <span class="pi pi-angle-down"></span>
         </p-button>
-        <p-menu #menu [popup]="true" [model]="items"></p-menu>
+        <p-menu #menu [popup]="true" [model]="items" appendTo="menuContainer" styleClass="profile-menu"></p-menu>
     </div>
 </div>
 

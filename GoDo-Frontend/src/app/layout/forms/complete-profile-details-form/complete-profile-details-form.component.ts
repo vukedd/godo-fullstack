@@ -18,7 +18,6 @@ import { Router } from '@angular/router';
 import { FileUploadModule } from 'primeng/fileupload';
 import { TooltipModule } from 'primeng/tooltip';
 import { concatMap } from 'rxjs';
-import { environment } from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-complete-profile-details-form',
@@ -64,6 +63,11 @@ export class CompleteProfileDetailsFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (!this.authService.isProfilePending()) {
+      this.router.navigate(['dashboard']);
+      return;
+    }
+    
     let username = this.authService.getUsername();
     if (username != undefined) {
       this.userService.getUserDeatilsFormData(username).subscribe({
@@ -111,7 +115,7 @@ export class CompleteProfileDetailsFormComponent implements OnInit {
           .split('T')[0] ?? '',
       city: this.profileDetailsForm.value.city ?? '',
       address: this.profileDetailsForm.value.address ?? '',
-      phoneNumber: this.profileDetailsForm.value.phoneNumber ?? '',
+      phoneNumber: `06${this.profileDetailsForm.value.phoneNumber}`,
     };
 
     if (this.selectedFile != null) {
