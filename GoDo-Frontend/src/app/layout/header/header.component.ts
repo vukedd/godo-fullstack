@@ -135,7 +135,7 @@ private setupUserMenu(): void {
       menuItems.splice(1, 0, {
         label: 'Profile',
         icon: 'pi pi-user',
-        routerLink: '/profile',
+        routerLink: 'profile',
       });
     }
 

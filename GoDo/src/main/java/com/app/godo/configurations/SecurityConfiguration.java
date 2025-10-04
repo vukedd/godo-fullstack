@@ -35,8 +35,6 @@ public class SecurityConfiguration {
                 .build();
     }
 
-
-
     @Bean
     public AuthenticationManager authenticationManager(
             final AuthenticationConfiguration authenticationConfiguration)

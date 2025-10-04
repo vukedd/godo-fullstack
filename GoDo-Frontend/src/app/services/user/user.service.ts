@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { Observable } from 'rxjs';
 import { UserDetailsDto } from '../../models/user/UserDetailsDto';
+import { EditPasswordDto } from '../../models/user/EditPasswordDto';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { UserDetailsDto } from '../../models/user/UserDetailsDto';
 export class UserService {
   constructor(private http: HttpClient) {}
 
-  public getUserDeatilsFormData(username: String): Observable<any> {
+  public getUserDetailsFormData(username: String): Observable<any> {
     return this.http.get(`${environment.apiUrl}/user/details/${username}`)
   }
 
@@ -19,5 +20,13 @@ export class UserService {
     formData.append('userDetails', JSON.stringify(data));
     formData.append('image', profilePicture);
     return this.http.patch(`${environment.apiUrl}/user/update`, formData);
+  }
+
+  public getUserProfileDetails(username: String): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/user/profile/${username}`);
+  }
+
+  public editPassword(username: String, request: EditPasswordDto) {
+    return this.http.patch(`${environment.apiUrl}/user/edit-password/${username}`, request);
   }
 }

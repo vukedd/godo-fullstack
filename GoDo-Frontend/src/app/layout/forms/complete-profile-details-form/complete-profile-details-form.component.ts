@@ -70,7 +70,7 @@ export class CompleteProfileDetailsFormComponent implements OnInit {
     
     let username = this.authService.getUsername();
     if (username != undefined) {
-      this.userService.getUserDeatilsFormData(username).subscribe({
+      this.userService.getUserDetailsFormData(username).subscribe({
         next: (response: UserDetailsDto) => {
           this.profileDetailsForm.setValue({
             username: response.username,
