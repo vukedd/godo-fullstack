@@ -74,7 +74,7 @@ public class AccountRequestService {
         accountRequest.setRejectionReason(rejectRequestDto.getReason());
         accountRequestRepository.save(accountRequest);
 
-        emailService.sendRegistrationRequestDeclineEmail(accountRequest.getUsername(), accountRequest.getEmail());
+        emailService.sendRegistrationRequestDeclineEmail(accountRequest.getUsername(), accountRequest.getEmail(), accountRequest.getRejectionReason());
 
         return new RejectRegistrationRequestDto("Registration request successfully rejected!");
     }

@@ -213,7 +213,7 @@ public class EmailService {
     }
 
     @Async
-    public void sendRegistrationRequestDeclineEmail(String username, String address) {
+    public void sendRegistrationRequestDeclineEmail(String username, String address, String reason) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
@@ -256,6 +256,10 @@ public class EmailService {
                     "                            <p style=\"font-size: 16px; line-height: 1.5; color: #EAEAEA; margin: 0 0 15px 0;\">\n" +
                     "                                After careful review, we regret to inform you that your account registration request has been declined.\n" +
                     "                            </p>\n" +
+                    "                            <div style=\"background-color: #3b3b3b; border-left: 4px solid #D9534F; padding: 15px; margin: 20px 0; border-radius: 4px;\">\n" +
+                    "                                <p style=\"font-size: 16px; color: #FFD2D2; margin: 0 0 10px 0;\"><strong>Reason for Decline:</strong></p>\n" +
+                    "                                <p style=\"font-size: 15px; color: #EAEAEA; margin: 0;\">" + reason + "</p>\n" +
+                    "                            </div>\n" +
                     "                            <p style=\"font-size: 16px; line-height: 1.5; color: #EAEAEA; margin: 0 0 25px 0;\">\n" +
                     "                                If you believe this was a mistake or would like to try again, you may submit a new registration request in the future.\n" +
                     "                            </p>\n" +
@@ -263,9 +267,7 @@ public class EmailService {
                     "                                <tr><td style=\"border-bottom: 2px solid #D9534F;\"></td></tr>\n" +
                     "                            </table>\n" +
                     "                            <p style=\"font-size: 16px; line-height: 1.5; color: #EAEAEA; margin: 25px 0 0 0;\">\n" +
-                    "                                Thank you for your interest.\n" +
-                    "                                <br>\n" +
-                    "                                The GoDo Team\n" +
+                    "                                Thank you for your interest.<br>The GoDo Team\n" +
                     "                            </p>\n" +
                     "                        </td>\n" +
                     "                    </tr>\n" +

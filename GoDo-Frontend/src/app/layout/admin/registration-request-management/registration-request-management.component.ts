@@ -4,13 +4,25 @@ import { AccountRequestService } from '../../../services/accountRequest/account-
 import { PendingRegistrationRequestDto } from '../../../models/accountRequest/pendingRegistrationRequestDto';
 import { CommonModule } from '@angular/common';
 import { RejectRequestDto } from '../../../models/accountRequest/rejectRequestDto';
-import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-registration-request-management',
-  imports: [ButtonModule, CommonModule, DialogModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    ButtonModule,
+    CommonModule,
+    DialogModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './registration-request-management.component.html',
   styleUrl: './registration-request-management.component.css',
 })
@@ -23,7 +35,10 @@ export class RegistrationRequestManagementComponent implements OnInit {
     reason: new FormControl('', Validators.required),
   });
 
-  constructor(public accountRequestService: AccountRequestService, public messageService: MessageService) {}
+  constructor(
+    public accountRequestService: AccountRequestService,
+    public messageService: MessageService
+  ) {}
 
   formatDate(date: Date) {
     return date.toString().split('T')[0];
@@ -60,8 +75,8 @@ export class RegistrationRequestManagementComponent implements OnInit {
     let index = this.currentRequestIndex;
     let rejectRequestDto: RejectRequestDto = {
       requestId: this.pendingRegistrationRequests[index].id,
-      reason: this.rejectForm.value.reason ?? ''
-    }
+      reason: this.rejectForm.value.reason ?? '',
+    };
 
     this.accountRequestService
       .rejectPendingAccountRequest(rejectRequestDto)
@@ -74,6 +89,7 @@ export class RegistrationRequestManagementComponent implements OnInit {
             this.pendingRegistrationRequests = this.pendingRegistrationRequests
               .slice(0, index)
               .concat(this.pendingRegistrationRequests.slice(index + 1));
+            this.hideDialog();
           }
         },
       });
