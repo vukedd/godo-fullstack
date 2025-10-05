@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { Observable } from 'rxjs';
 import { UserDetailsDto } from '../../models/user/UserDetailsDto';
+import { EditPasswordDto } from '../../models/user/EditPasswordDto';
+import { EditProfileDto } from '../../models/user/EditProfileDto';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,7 @@ import { UserDetailsDto } from '../../models/user/UserDetailsDto';
 export class UserService {
   constructor(private http: HttpClient) {}
 
-  public getUserDeatilsFormData(username: String): Observable<any> {
+  public getUserDetailsFormData(username: String): Observable<any> {
     return this.http.get(`${environment.apiUrl}/user/details/${username}`)
   }
 
@@ -19,5 +21,25 @@ export class UserService {
     formData.append('userDetails', JSON.stringify(data));
     formData.append('image', profilePicture);
     return this.http.patch(`${environment.apiUrl}/user/update`, formData);
+  }
+
+  public getUserProfileDetails(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/user/profile`);
+  }
+
+  public editPassword(username: String, request: EditPasswordDto) {
+    return this.http.patch(`${environment.apiUrl}/user/edit-password/${username}`, request);
+  }
+
+  public changeProfileDetails(body: EditProfileDto, image: File | null): Observable<any> {
+    let formData = new FormData();
+    formData.append('userDetails', JSON.stringify(body));
+
+    if (image != null) {
+          formData.append('image', image);
+    }
+    
+    return this.http.patch(`${environment.apiUrl}/user/edit-profile`, formData)
+  
   }
 }

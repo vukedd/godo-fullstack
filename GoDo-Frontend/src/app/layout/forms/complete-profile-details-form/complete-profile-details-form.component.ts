@@ -18,7 +18,6 @@ import { Router } from '@angular/router';
 import { FileUploadModule } from 'primeng/fileupload';
 import { TooltipModule } from 'primeng/tooltip';
 import { concatMap } from 'rxjs';
-import { environment } from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-complete-profile-details-form',
@@ -30,7 +29,7 @@ import { environment } from '../../../../environments/environment.development';
     DatePickerModule,
     InputMaskModule,
     FileUploadModule,
-    TooltipModule
+    TooltipModule,
   ],
   templateUrl: './complete-profile-details-form.component.html',
   styleUrl: './complete-profile-details-form.component.css',
@@ -64,14 +63,19 @@ export class CompleteProfileDetailsFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (!this.authService.isProfilePending()) {
+      this.router.navigate(['dashboard']);
+      return;
+    }
+
     let username = this.authService.getUsername();
     if (username != undefined) {
-      this.userService.getUserDeatilsFormData(username).subscribe({
+      this.userService.getUserDetailsFormData(username).subscribe({
         next: (response: UserDetailsDto) => {
           this.profileDetailsForm.setValue({
             username: response.username,
             email: response.email,
-            dateOfBirth: null,  
+            dateOfBirth: null,
             city: response.city,
             address: response.address,
             phoneNumber: response.phoneNumber,
@@ -90,7 +94,11 @@ export class CompleteProfileDetailsFormComponent implements OnInit {
     }
 
     const today = new Date();
-    this.maxDate = new Date(today.getFullYear() - 16, today.getMonth(), today.getDate());
+    this.maxDate = new Date(
+      today.getFullYear() - 16,
+      today.getMonth(),
+      today.getDate()
+    );
   }
 
   isBtnDisabled() {
@@ -109,29 +117,35 @@ export class CompleteProfileDetailsFormComponent implements OnInit {
         this.profileDetailsForm.value.dateOfBirth
           ?.toISOString()
           .split('T')[0] ?? '',
-      city: this.profileDetailsForm.value.city ?? '',
-      address: this.profileDetailsForm.value.address ?? '',
-      phoneNumber: this.profileDetailsForm.value.phoneNumber ?? '',
+      city:
+        this.profileDetailsForm.value.city?.trim().split(/\s+/).join(' ') ?? '',
+      address:
+        this.profileDetailsForm.value.address?.trim().split(/\s+/).join(' ') ??
+        '',
+      phoneNumber: `06${this.profileDetailsForm.value.phoneNumber}`,
     };
 
     if (this.selectedFile != null) {
-      this.userService.submitUserDetailsForm(userDetails, this.selectedFile).pipe(
-        concatMap(() => {
-          return this.authService.refreshToken();
-        })
-      ).subscribe({
-        next: (response) => {
-          this.authService.setTokens(response)
-          this.router.navigate(['dashboard']);
-        },
-        error: (error) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'An error has occurred while submiting details',
-            detail: error.error.message
+      this.userService
+        .submitUserDetailsForm(userDetails, this.selectedFile)
+        .pipe(
+          concatMap(() => {
+            return this.authService.refreshToken();
           })
-        }
-      })
+        )
+        .subscribe({
+          next: (response) => {
+            this.authService.setTokens(response);
+            this.router.navigate(['dashboard']);
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'An error has occurred while submiting details',
+              detail: error.error.message,
+            });
+          },
+        });
     }
   }
 }

@@ -52,7 +52,7 @@ public class AccountRequestService {
         accountRequest.setStatus(RequestStatus.ACCEPTED);
         accountRequestRepository.save(accountRequest);
 
-        User newUser =  User.builder()
+        User newUser = User.builder()
                 .username(accountRequest.getUsername())
                 .password(accountRequest.getPassword())
                 .email(accountRequest.getEmail())
@@ -74,7 +74,7 @@ public class AccountRequestService {
         accountRequest.setRejectionReason(rejectRequestDto.getReason());
         accountRequestRepository.save(accountRequest);
 
-        emailService.sendRegistrationRequestDeclineEmail(accountRequest.getUsername(), accountRequest.getEmail());
+        emailService.sendRegistrationRequestDeclineEmail(accountRequest.getUsername(), accountRequest.getEmail(), accountRequest.getRejectionReason());
 
         return new RejectRegistrationRequestDto("Registration request successfully rejected!");
     }
