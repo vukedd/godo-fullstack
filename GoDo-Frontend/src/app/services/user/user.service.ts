@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment.development';
 import { Observable } from 'rxjs';
 import { UserDetailsDto } from '../../models/user/UserDetailsDto';
 import { EditPasswordDto } from '../../models/user/EditPasswordDto';
+import { EditProfileDto } from '../../models/user/EditProfileDto';
 
 @Injectable({
   providedIn: 'root'
@@ -22,11 +23,23 @@ export class UserService {
     return this.http.patch(`${environment.apiUrl}/user/update`, formData);
   }
 
-  public getUserProfileDetails(username: String): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/user/profile/${username}`);
+  public getUserProfileDetails(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/user/profile`);
   }
 
   public editPassword(username: String, request: EditPasswordDto) {
     return this.http.patch(`${environment.apiUrl}/user/edit-password/${username}`, request);
+  }
+
+  public changeProfileDetails(body: EditProfileDto, image: File | null): Observable<any> {
+    let formData = new FormData();
+    formData.append('userDetails', JSON.stringify(body));
+
+    if (image != null) {
+          formData.append('image', image);
+    }
+    
+    return this.http.patch(`${environment.apiUrl}/user/edit-profile`, formData)
+  
   }
 }

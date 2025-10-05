@@ -91,6 +91,8 @@ export class RegistrationRequestManagementComponent implements OnInit {
               .concat(this.pendingRegistrationRequests.slice(index + 1));
             this.hideDialog();
           }
+
+          this.rejectForm.reset();
         },
       });
   }

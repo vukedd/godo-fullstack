@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,6 +39,22 @@ public class FileStorageService {
 
         } catch (IOException ex) {
             throw new RuntimeException("Could not store file " + uniqueFilename, ex);
+        }
+    }
+
+    public void delete(String fileUrl) {
+        if (fileUrl == null || fileUrl.isBlank()) {
+            return;
+        }
+
+        try {
+            // Extract filename using string manipulation
+            String filename = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+
+            Path filePath = this.uploadDir.resolve(filename).normalize();
+            Files.deleteIfExists(filePath);
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not delete file: " + fileUrl, ex);
         }
     }
 }

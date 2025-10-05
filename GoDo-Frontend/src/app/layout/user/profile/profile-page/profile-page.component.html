@@ -1,13 +1,11 @@
 <div class="px-4 lg:px-8 mt-8 py-4">
   <div styleClass="p-4">
     <div class="flex flex-column align-items-center text-center">
-      <p-avatar
-        [image]="userProfile.imagePath"
-        size="xlarge"
-        shape="circle"
-        styleClass="mb-3"
-      >
-      </p-avatar>
+    <img
+      [src]="userProfile.imagePath"
+      class="border-circle"
+      style="width: 150px; height: 150px"
+    />
       <h2 class="mt-0 mb-1">{{ userProfile.username }}</h2>
     </div>
 
@@ -58,7 +56,7 @@
           </div>
 
           <div class="w-full flex justify-content-start">
-            <p-button label="Edit personal information"></p-button>
+            <p-button label="Edit personal information" [routerLink]="'/edit-profile'"></p-button>
           </div>
         </div>
       </div>

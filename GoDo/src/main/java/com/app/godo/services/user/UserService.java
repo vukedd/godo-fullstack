@@ -1,6 +1,7 @@
 package com.app.godo.services.user;
 
 import com.app.godo.dtos.auth.PasswordChangeRequest;
+import com.app.godo.dtos.user.EditUserProfileDto;
 import com.app.godo.dtos.user.UserDetailsDto;
 import com.app.godo.dtos.user.UserProfileDto;
 import com.app.godo.enums.ProfileStatus;
@@ -18,17 +19,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
+    @Value("${app.host.url}")
+    private String hostUrl;
+
     private final UserRepository userRepository;
     private final FileStorageService fileStorageService;
     private final ImageRepository imageRepository;
@@ -64,7 +68,7 @@ public class UserService {
 
         Image image = imageRepository.findByProfileImageOf(user);
 
-        String path = "http://localhost:8080/uploads/" + fileStorageService.storeFile(userPfp);;
+        String path = hostUrl + "/uploads/" + fileStorageService.storeFile(userPfp);;
 
         user.setProfileImage(
                 Image.builder()
@@ -92,29 +96,14 @@ public class UserService {
                 .build();
     }
 
-    public UserProfileDto getUserProfileInformation(String username, String token) {
+    public UserProfileDto getUserProfileInformation(String token) {
         String subject = extractSubject(token);
 
-        if (!subject.equals(username)) {
-            throw new UnauthorizedException("you are not allowed to perform this operation");
-        }
-
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsername(subject)
                 .orElseThrow(() -> new NotFoundException("the user you were looking for can't be found!"));
 
 
         return UserProfileDto.fromEntity(user);
-    }
-
-    public UserDetailsDto convertToUserDetailsDto(String userJson) {
-        UserDetailsDto user;
-        try {
-            user = objectMapper.readValue(userJson, UserDetailsDto.class);
-        } catch (JsonProcessingException e) {
-            throw new ParseException("An expected error has occurred please try again in a moment!");
-        }
-
-        return user;
     }
 
     public void changePasswordByUsername(String username, PasswordChangeRequest request, String token) {
@@ -135,6 +124,57 @@ public class UserService {
         userRepository.save(user);
 
         emailService.sendPasswordChangeEmail(user.getUsername(), user.getEmail());
+    }
+
+    @Transactional
+    public void changeProfileDetails(EditUserProfileDto editUserProfileDto, MultipartFile file, String token) {
+        String subject = extractSubject(token);
+
+        User user = userRepository.findByUsername(subject)
+                .orElseThrow(() -> new NotFoundException("the user you were looking for cant be found!"));
+
+        user.setAddress(editUserProfileDto.getAddress());
+        user.setPhoneNumber(editUserProfileDto.getPhoneNumber());
+        user.setCity(editUserProfileDto.getCity());
+        user.setDateOfBirth(editUserProfileDto.getDateOfBirth());
+
+        if (file != null) {
+            Image oldImage = user.getProfileImage();
+
+            String path = hostUrl + "/uploads/" + fileStorageService.storeFile(file);
+
+            Image newImage = Image.builder().path(path).build();
+            user.setProfileImage(newImage);
+
+            if (oldImage != null) {
+                fileStorageService.delete(oldImage.getPath());
+            }
+        }
+
+        userRepository.save(user);
+
+    }
+
+    public UserDetailsDto convertToUserDetailsDto(String userJson) {
+        UserDetailsDto user;
+        try {
+            user = objectMapper.readValue(userJson, UserDetailsDto.class);
+        } catch (JsonProcessingException e) {
+            throw new ParseException("An expected error has occurred please try again in a moment!");
+        }
+
+        return user;
+    }
+
+    public EditUserProfileDto convertToEditUserProfileDto(String userJson) {
+        EditUserProfileDto user;
+        try {
+            user = objectMapper.readValue(userJson, EditUserProfileDto.class);
+        } catch (JsonProcessingException e) {
+            throw new ParseException("An expected error has occurred please try again in a moment!");
+        }
+
+        return user;
     }
 
     private String extractSubject(String token) {

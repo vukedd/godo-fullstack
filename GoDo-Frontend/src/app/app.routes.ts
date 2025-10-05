@@ -9,6 +9,7 @@ import { DashboardComponent } from './layout/dashboard-related/dashboard/dashboa
 import { ProfileStatusGuard } from './guards/profile-status-guard';
 import { CompleteProfileDetailsFormComponent } from './layout/forms/complete-profile-details-form/complete-profile-details-form.component';
 import { ProfilePageComponent } from './layout/user/profile/profile-page/profile-page.component';
+import { ChangePersonalInformationComponent } from './layout/user/profile/change-personal-information/change-personal-information.component';
 
 export const routes: Routes = [
     {
@@ -57,6 +58,12 @@ export const routes: Routes = [
         title: 'Profile',
         path: 'profile',
         component: ProfilePageComponent,
+        canActivate: [AuthGuard, ProfileStatusGuard]
+    },
+    {
+        title: 'Change personal information',
+        path: 'edit-profile',
+        component: ChangePersonalInformationComponent,
         canActivate: [AuthGuard, ProfileStatusGuard]
     }
 ];

@@ -1,0 +1,73 @@
+<div
+  class="profile-container p-5 m-5 mt-8 flex lg:justify-content-center flex-column lg:flex-row align-items-center"
+>
+  <div class="flex justify-content-center flex-column align-items-center">
+    <img
+      [src]="userProfilePicture"
+      class="border-circle"
+      style="width: 150px; height: 150px"
+    />
+
+    <p-fileUpload
+      #fileUpload
+      class="mt-5"
+      mode="basic"
+      name="profilePic"
+      accept="image/*"
+      [auto]="true"
+      [customUpload]="true"
+      (onSelect)="onFileSelect($event)"
+      chooseLabel="Edit profile picture"
+      chooseIcon="pi pi-pencil"
+    >
+    </p-fileUpload>
+  </div>
+  <p-divider layout="vertical" class="mx-8 hidden lg:block"></p-divider>
+
+  <form
+    class="flex flex-column align-items-center justify-content-center mt-5"
+    [formGroup]="profileDetailsForm"
+  >
+    <div class="field flex flex-column">
+      <label for="phoneNumber" class="mb-2">Phone number:</label>
+      <p-inputmask
+        id="phoneNumber"
+        mask="(069) 999-9999?"
+        placeholder="(06_) ___-____"
+        formControlName="phoneNumber"
+        styleClass="w-full"
+        [unmask]="true"
+      ></p-inputmask>
+    </div>
+    <div class="field flex flex-column">
+      <label>City:</label>
+      <input type="text" pInputText formControlName="city" />
+    </div>
+    <div class="field flex flex-column">
+      <label>Address:</label>
+      <input type="text" pInputText formControlName="address" />
+    </div>
+    <div>
+      <div
+        class="field flex flex-column justify-content-start align-items-start"
+      >
+        <label for="dateOfBirth" class="mb-2">Date of birth:</label>
+        <p-datepicker
+          id="dateOfBirth"
+          placeholder="Enter date of birth"
+          formControlName="dateOfBirth"
+          [maxDate]="maxDate"
+          [defaultDate]="maxDate"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+        ></p-datepicker>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="flex justify-content-center">
+  <p-button severity="danger" (onClick)="cancelForm()">Cancel</p-button>
+  <p-button severity="success" class="mx-3" [disabled]="!isBtnDisabled()"
+  (onClick)="submitForm()" [loading]="this.isLoading">Submit</p-button
+  >
+</div>

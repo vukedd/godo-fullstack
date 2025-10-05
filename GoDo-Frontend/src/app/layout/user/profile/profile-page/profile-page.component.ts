@@ -8,6 +8,7 @@ import { UserProfileDto } from '../../../../models/user/UserProfileDto';
 import { UserService } from '../../../../services/user/user.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { MessageService } from 'primeng/api';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-profile-page',
@@ -17,6 +18,7 @@ import { MessageService } from 'primeng/api';
     DividerModule,
     ChangePasswordComponent,
     ButtonModule,
+    RouterModule
   ],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.css',
@@ -35,7 +37,8 @@ export class ProfilePageComponent implements OnInit {
   constructor(
     public userService: UserService,
     public authService: AuthService,
-    public messageService: MessageService
+    public messageService: MessageService,
+    public router: Router
   ) {}
 
   ngOnInit(): void {
@@ -50,7 +53,7 @@ export class ProfilePageComponent implements OnInit {
     }
 
     this.userService
-      .getUserProfileDetails(this.authService.getUsername() ?? '')
+      .getUserProfileDetails()
       .subscribe({
         next: (response) => {
           this.userProfile.username = `@${response.username}`;
@@ -59,11 +62,11 @@ export class ProfilePageComponent implements OnInit {
           this.userProfile.city = response.city;
           this.userProfile.dateOfBirth = response.dateOfBirth;
           this.userProfile.phoneNumber = response.phoneNumber;
-          
-          if (this.userProfile.imagePath == "") {
+
+          if (response.imagePath == "") {
             this.userProfile.imagePath = "https://picsum.photos/800/600";
           } else {
-            this.userProfile.phoneNumber = response.imagePath;
+            this.userProfile.imagePath = response.imagePath;
           }
         },
         error: (error) => {

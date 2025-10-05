@@ -4,7 +4,7 @@ INSERT INTO users(username, email, password, member_since, date_of_birth, phone_
 
 INSERT INTO users(username, email, password, member_since, date_of_birth, phone_number, address, city, role, profile_status) VALUES('vuka1sin', 'vu1kasin@gmail.com', '$2a$10$luqEVAdjiGEVJb.lW5qbYuL.yAkYPZdJxZkKz5lGlUaQZzJFhi.ju', '2025-06-06',null, null, null, null, 'MEMBER', 0);
 
-INSERT INTO images(event_id, user_id, venue_id, path) VALUES (null, 2, null,     'http://localhost:8080/uploads/6c9ccf10-310d-41eb-af13-7a904db29766_jew.jpg');
+INSERT INTO images(event_id, user_id, venue_id, path) VALUES (null, 2, null, 'https://picsum.photos/800/600');
 
 INSERT INTO venues (name, description, address, average_rating, type, created_at) VALUES
                                                                                           ('The Grand Oak Theater', 'Historic theater showing classic films and live performances.', '123 Broadway, Starlight City', 4.8, 4, '2022-01-15'),

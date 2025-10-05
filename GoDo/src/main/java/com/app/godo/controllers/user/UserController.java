@@ -34,12 +34,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserDetailsFormDataByUsername(username, extractToken(authHeader)));
     }
 
-    @GetMapping("/profile/{username}")
+    @GetMapping("/profile")
     public ResponseEntity<UserProfileDto> getUserProfileInformation(
-            @PathVariable("username") String username,
             @RequestHeader("Authorization") String authHeader
     ) {
-        return ResponseEntity.ok(userService.getUserProfileInformation(username, extractToken(authHeader)));
+        return ResponseEntity.ok(userService.getUserProfileInformation(extractToken(authHeader)));
     }
 
     @PatchMapping("/edit-password/{username}")
@@ -49,6 +48,18 @@ public class UserController {
             @RequestBody PasswordChangeRequest body
     ) {
         userService.changePasswordByUsername(username, body, extractToken(authHeader));
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "/edit-profile", consumes = { "multipart/form-data" })
+    public ResponseEntity<Void> changeProfile(
+            @RequestPart("userDetails") String userJson,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        MultipartFile file =  imageFile != null && !imageFile.isEmpty() ? imageFile : null;
+        userService.changeProfileDetails(userService.convertToEditUserProfileDto(userJson), file, extractToken(authHeader));
+
         return ResponseEntity.noContent().build();
     }
 

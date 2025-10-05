@@ -13,7 +13,7 @@
             <span class="pi pi-user mr-10"></span>
             <span class="pi pi-angle-down"></span>
         </p-button>
-        <p-menu #menu [popup]="true" [model]="items" appendTo="menuContainer" styleClass="profile-menu"></p-menu>
+        <p-menu #menu [popup]="true" [model]="items" [appendTo]="'body'" styleClass="profile-menu"></p-menu>
     </div>
 </div>
 
@@ -38,7 +38,7 @@
 
         </div>
         <div class="flex flex-column gap-3 px-4 pb-4">
-            <p-button label="Profile" icon="pi pi-user" styleClass="p-button-lg w-full" *ngIf="!isPending()"></p-button>
+            <p-button label="Profile" icon="pi pi-user" styleClass="p-button-lg w-full" *ngIf="!isPending()" [routerLink]="'/profile'"></p-button>
             <p-button label="Logout" icon="pi pi-sign-out" [outlined]="true" styleClass="p-button-lg w-full" (click)="logout()"></p-button>
         </div>
     </div>
