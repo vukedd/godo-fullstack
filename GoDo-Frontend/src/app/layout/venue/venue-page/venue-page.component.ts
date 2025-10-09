@@ -19,6 +19,10 @@ import { SelectModule } from 'primeng/select';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { UserService } from '../../../services/user/user.service';
+import { ManagesService } from '../../../services/manages/manages.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-venue-page',
@@ -33,6 +37,7 @@ import { DialogModule } from 'primeng/dialog';
     ReactiveFormsModule,
     ToastModule,
     DialogModule,
+    MultiSelectModule
   ],
   templateUrl: './venue-page.component.html',
   styleUrl: './venue-page.component.css',
@@ -44,6 +49,10 @@ export class VenuePageComponent implements OnInit {
   initialVenueTypeIndex: number = 0;
   isLoading: boolean = false;
   isDeleteDialogVisible: boolean = false;
+  isManagementDialogVisible: boolean = false;
+  
+  selectedUsers: any;
+  managerOptions: any;
 
   VenueTypeMap = new Map<string, string>([
     ['CULTURAL_CENTER', 'Cultural Center'],
@@ -85,7 +94,9 @@ export class VenuePageComponent implements OnInit {
     private route: ActivatedRoute,
     private authService: AuthService,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private userService: UserService,
+    private managesService: ManagesService
   ) {}
 
   ngOnInit(): void {
@@ -155,10 +166,7 @@ export class VenuePageComponent implements OnInit {
     return this.authService.isAdmin();
   }
 
-  switchToEdit() {
-    this.isEdit = true;
-  }
-
+  // edit venue
   submitChanges() {
     this.isLoading = true;
     let updateVenueRequest = {
@@ -203,6 +211,10 @@ export class VenuePageComponent implements OnInit {
     });
   }
 
+  switchToEdit() {
+    this.isEdit = true;
+  }
+
   discardChanges() {
     this.isEdit = false;
     this.editVenueForm = new FormGroup({
@@ -219,6 +231,7 @@ export class VenuePageComponent implements OnInit {
         });
   }
 
+  // delete venue
   deleteVenue() {
     let venueId = this.route.snapshot.paramMap.get('id') ?? '0';
     this.venueService.deleteVenue(venueId).subscribe({
@@ -232,6 +245,7 @@ export class VenuePageComponent implements OnInit {
     });
   }
 
+  // dialog logic
   showDialog() {
     this.isDeleteDialogVisible = true;
   }
@@ -240,6 +254,46 @@ export class VenuePageComponent implements OnInit {
     this.isDeleteDialogVisible = false;
   }
 
+  // management
+  showVenueManagementDialog() {
+    if (!this.venue?.id) {
+      this.showError("Cannot manage managers without a selected venue.");
+      return;
+    }
+
+    const managerOptions$ = this.userService.getManagerOptions();
+    const selectedManagers$ = this.managesService.getManagersByVenueId(this.venue.id);
+
+    forkJoin({
+      options: managerOptions$,
+      selected: selectedManagers$
+    }).subscribe({
+      next: (response) => {
+        
+        this.managerOptions = response.options;
+        this.selectedUsers = response.selected;
+
+        this.isManagementDialogVisible = true;
+      },
+      error: (error) => {
+        this.showError("An error occurred while preparing the manager management dialog.");
+      }
+    });
+  }
+
+  submitManagerSelection() {
+    this.managesService.updateManagers(this.venue?.id ?? 0, this.selectedUsers)
+    .subscribe({
+      next: (response) => {
+        this.isManagementDialogVisible = false;
+      }, error: (error) => {
+        this.showError("An error has occurred while updating managers");
+      }
+    })
+  }
+
+  
+  // toast handling
   showError(message: string) {
     this.messageService.add({
       summary: message,
