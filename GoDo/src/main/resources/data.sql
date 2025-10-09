@@ -1,8 +1,9 @@
-INSERT INTO users(username, email, password, member_since, date_of_birth, phone_number, address, city, role, profile_status) VALUES('admin', 'admin@gmail.com', '$2a$10$luqEVAdjiGEVJb.lW5qbYuL.yAkYPZdJxZkKz5lGlUaQZzJFhi.ju', '2025-06-06', '2002-05-05', '060012345678', 'Miloje Mili 19', 'Bogojevo', 'ADMIN', 1);
+INSERT INTO users(username, email, password, member_since, date_of_birth, phone_number, address, city, role, profile_status) VALUES('admin', 'admin@gmail.com', '$2a$10$luqEVAdjiGEVJb.lW5qbYuL.yAkYPZdJxZkKz5lGlUaQZzJFhi.ju', '2025-06-06', '2002-05-05', '0622222222', 'Miloje Mili 19', 'Bogojevo', 'ADMIN', 1);
 -- Admin123.
-INSERT INTO users(username, email, password, member_since, date_of_birth, phone_number, address, city, role, profile_status) VALUES('vukasin', 'vukasin@gmail.com', '$2a$10$luqEVAdjiGEVJb.lW5qbYuL.yAkYPZdJxZkKz5lGlUaQZzJFhi.ju', '2025-06-06', '2002-05-05', '060012345679', 'Miloje Milic 19', 'Bogojevo', 'MEMBER', 1);
-
+INSERT INTO users(username, email, password, member_since, date_of_birth, phone_number, address, city, role, profile_status) VALUES('vukasin', 'vukasin@gmail.com', '$2a$10$luqEVAdjiGEVJb.lW5qbYuL.yAkYPZdJxZkKz5lGlUaQZzJFhi.ju', '2025-06-06', '2002-05-05', '0633333333', 'Miloje Milic 19', 'Bogojevo', 'MEMBER', 1);
+-- Admin123.
 INSERT INTO users(username, email, password, member_since, date_of_birth, phone_number, address, city, role, profile_status) VALUES('vuka1sin', 'vu1kasin@gmail.com', '$2a$10$luqEVAdjiGEVJb.lW5qbYuL.yAkYPZdJxZkKz5lGlUaQZzJFhi.ju', '2025-06-06',null, null, null, null, 'MEMBER', 0);
+-- Admin123.
 
 INSERT INTO images(event_id, user_id, venue_id, path) VALUES (null, 2, null, 'https://picsum.photos/800/600');
 

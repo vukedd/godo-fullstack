@@ -26,6 +26,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -129,6 +131,11 @@ public class UserService {
     @Transactional
     public void changeProfileDetails(EditUserProfileDto editUserProfileDto, MultipartFile file, String token) {
         String subject = extractSubject(token);
+
+        Optional<User> userWithSamePhoneCheck = userRepository.findByPhoneNumber(editUserProfileDto.getPhoneNumber());
+        if (userRepository.findByPhoneNumber(editUserProfileDto.getPhoneNumber()).isPresent() && !userWithSamePhoneCheck.get().getUsername().equals(subject)) {
+            throw new ConflictException("the entered phone number is already taken");
+        }
 
         User user = userRepository.findByUsername(subject)
                 .orElseThrow(() -> new NotFoundException("the user you were looking for cant be found!"));
