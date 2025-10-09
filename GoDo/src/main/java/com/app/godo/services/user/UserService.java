@@ -3,6 +3,7 @@ package com.app.godo.services.user;
 import com.app.godo.dtos.auth.PasswordChangeRequest;
 import com.app.godo.dtos.user.EditUserProfileDto;
 import com.app.godo.dtos.user.UserDetailsDto;
+import com.app.godo.dtos.user.UserManagerOptionDto;
 import com.app.godo.dtos.user.UserProfileDto;
 import com.app.godo.enums.ProfileStatus;
 import com.app.godo.exceptions.general.ConflictException;
@@ -13,8 +14,10 @@ import com.app.godo.models.Image;
 import com.app.godo.models.User;
 import com.app.godo.repositories.image.ImageRepository;
 import com.app.godo.repositories.user.UserRepository;
+import com.app.godo.services.auth.JwtService;
 import com.app.godo.services.email.EmailService;
 import com.app.godo.services.files.FileStorageService;
+import com.app.godo.utils.Utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -25,6 +28,10 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,12 +46,12 @@ public class UserService {
     private final EmailService emailService;
 
     private final ObjectMapper objectMapper;
-    private final JwtDecoder jwtDecoder;
     private final PasswordEncoder passwordEncoder;
+    private final Utils utils;
 
     @Transactional
     public void finishUserDetails(UserDetailsDto userDetails, MultipartFile userPfp, String token) {
-        String subject = extractSubject(token);
+        String subject = utils.extractSubject(token);
 
         if (!subject.equals(userDetails.getUsername())) {
             throw new UnauthorizedException("you are not allowed to perform this operation");
@@ -79,8 +86,23 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public List<UserManagerOptionDto> getManagerOptions(String token) {
+        String role = utils.extractRole(token);
+
+        if (role.equals("MEMBER")) {
+            throw new UnauthorizedException("you are not allowed to perform this action");
+        }
+
+        return this.userRepository
+                .findAll()
+                .stream()
+                .filter(user -> user.getRole().equals("MEMBER"))
+                .map(UserManagerOptionDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
     public UserDetailsDto getUserDetailsFormDataByUsername(String username, String token) {
-        String subject = extractSubject(token);
+        String subject = utils.extractSubject(token);
 
         if (!subject.equals(username)) {
             throw new UnauthorizedException("you are not allowed to perform this operation");
@@ -97,7 +119,7 @@ public class UserService {
     }
 
     public UserProfileDto getUserProfileInformation(String token) {
-        String subject = extractSubject(token);
+        String subject = utils.extractSubject(token);
 
         User user = userRepository.findByUsername(subject)
                 .orElseThrow(() -> new NotFoundException("the user you were looking for can't be found!"));
@@ -107,7 +129,7 @@ public class UserService {
     }
 
     public void changePasswordByUsername(String username, PasswordChangeRequest request, String token) {
-        String subject = extractSubject(token);
+        String subject = utils.extractSubject(token);
 
         if (!subject.equals(username)) {
             throw new UnauthorizedException("you are not allowed to perform this operation");
@@ -128,7 +150,12 @@ public class UserService {
 
     @Transactional
     public void changeProfileDetails(EditUserProfileDto editUserProfileDto, MultipartFile file, String token) {
-        String subject = extractSubject(token);
+        String subject = utils.extractSubject(token);
+
+        Optional<User> userWithSamePhoneCheck = userRepository.findByPhoneNumber(editUserProfileDto.getPhoneNumber());
+        if (userRepository.findByPhoneNumber(editUserProfileDto.getPhoneNumber()).isPresent() && !  userWithSamePhoneCheck.get().getUsername().equals(subject)) {
+            throw new ConflictException("the entered phone number is already taken");
+        }
 
         User user = userRepository.findByUsername(subject)
                 .orElseThrow(() -> new NotFoundException("the user you were looking for cant be found!"));
@@ -175,11 +202,5 @@ public class UserService {
         }
 
         return user;
-    }
-
-    private String extractSubject(String token) {
-        Jwt jwt = jwtDecoder.decode(token);
-
-        return jwt.getSubject();
     }
 }

@@ -3,9 +3,7 @@ package com.app.godo.services.auth;
 import com.app.godo.models.Administrator;
 import com.app.godo.models.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -32,5 +30,4 @@ public class JwtService {
         return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet))
                 .getTokenValue();
     }
-
 }

@@ -132,7 +132,7 @@ export class ChangePersonalInformationComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
-          this.propagateSuccess(error.error.message);
+          this.propagateError(error.error.message);
         },
       });
   }

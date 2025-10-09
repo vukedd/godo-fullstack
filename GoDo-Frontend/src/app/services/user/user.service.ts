@@ -40,6 +40,9 @@ export class UserService {
     }
     
     return this.http.patch(`${environment.apiUrl}/user/edit-profile`, formData)
-  
+  }
+
+  public getManagerOptions() : Observable<any> {
+    return this.http.get(`${environment.apiUrl}/user/manager/options`);
   }
 }

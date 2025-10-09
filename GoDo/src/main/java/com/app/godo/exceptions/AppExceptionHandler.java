@@ -1,6 +1,7 @@
 package com.app.godo.exceptions;
 
 import com.app.godo.dtos.error.ErrorResponseDto;
+import com.app.godo.exceptions.general.BadRequestException;
 import com.app.godo.exceptions.general.ConflictException;
 import com.app.godo.exceptions.general.NotFoundException;
 import com.app.godo.exceptions.general.UnauthorizedException;
@@ -90,5 +91,13 @@ public class AppExceptionHandler {
         String errorMessage = ex.getMessage();
 
         return new ResponseEntity<>(new UnauthorizedException(errorMessage), status);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<BadRequestException> handleBadRequestException(BadRequestException ex) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        String errorMessage = ex.getMessage();
+
+        return new ResponseEntity<>(new BadRequestException(errorMessage), status);
     }
 }
