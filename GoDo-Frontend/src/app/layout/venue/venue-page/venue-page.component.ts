@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { VenueOverviewDto } from '../../../models/venue/VenueOverviewDto';
 import { VenueService } from '../../../services/venue/venue.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
@@ -37,8 +37,9 @@ import { forkJoin } from 'rxjs';
     ReactiveFormsModule,
     ToastModule,
     DialogModule,
-    MultiSelectModule
-  ],
+    MultiSelectModule,
+    RouterModule
+],
   templateUrl: './venue-page.component.html',
   styleUrl: './venue-page.component.css',
 })
@@ -50,7 +51,8 @@ export class VenuePageComponent implements OnInit {
   isLoading: boolean = false;
   isDeleteDialogVisible: boolean = false;
   isManagementDialogVisible: boolean = false;
-  
+  isManager: boolean = false;
+
   selectedUsers: any;
   managerOptions: any;
 
@@ -101,6 +103,7 @@ export class VenuePageComponent implements OnInit {
 
   ngOnInit(): void {
     let venueId = this.route.snapshot.paramMap.get('id') ?? '0';
+
     this.venueService.findVenueById(venueId).subscribe({
       next: (response: VenueOverviewDto) => {
         this.venue = response;
@@ -133,6 +136,16 @@ export class VenuePageComponent implements OnInit {
         this.showError(error.error.message);
       },
     });
+
+    this.managesService.doesManagementExist(venueId, this.authService.getUsername() ?? '')
+    .subscribe({
+      next: (response) => {
+        this.isManager = response.exists;
+      },
+      error: (error) => {
+        this.isManager = false;
+      }
+    })
   }
 
   venueTypeColor(): string {
@@ -188,12 +201,19 @@ export class VenuePageComponent implements OnInit {
 
           for (let i = 0; i < this.VenueTypes.length; i++) {
             if (
-              this.VenueTypes[i].name == this.VenueTypeMap.get(response.venueType)
+              this.VenueTypes[i].name ==
+              this.VenueTypeMap.get(response.venueType)
             ) {
-              this.venue.type = this.VenueTypes[i].name.toUpperCase().trim().replace(" ", "_");
+              this.venue.type = this.VenueTypes[i].name
+                .toUpperCase()
+                .trim()
+                .replace(' ', '_');
               this.venueType = this.VenueTypes[i].name;
-              let venueTypeLabel = document.querySelector("#venueTypeLabel");
-              venueTypeLabel?.setAttribute("style", `color: ${this.venueTypeColor()}`);
+              let venueTypeLabel = document.querySelector('#venueTypeLabel');
+              venueTypeLabel?.setAttribute(
+                'style',
+                `color: ${this.venueTypeColor()}`
+              );
               break;
             }
           }
@@ -218,17 +238,17 @@ export class VenuePageComponent implements OnInit {
   discardChanges() {
     this.isEdit = false;
     this.editVenueForm = new FormGroup({
-          name: new FormControl(this.venue?.name, Validators.required),
-          address: new FormControl(this.venue?.address, Validators.required),
-          description: new FormControl(
-            this.venue?.description,
-            Validators.required
-          ),
-          type: new FormControl(
-            this.VenueTypes[this.initialVenueTypeIndex],
-            Validators.required
-          ),
-        });
+      name: new FormControl(this.venue?.name, Validators.required),
+      address: new FormControl(this.venue?.address, Validators.required),
+      description: new FormControl(
+        this.venue?.description,
+        Validators.required
+      ),
+      type: new FormControl(
+        this.VenueTypes[this.initialVenueTypeIndex],
+        Validators.required
+      ),
+    });
   }
 
   // delete venue
@@ -257,42 +277,46 @@ export class VenuePageComponent implements OnInit {
   // management
   showVenueManagementDialog() {
     if (!this.venue?.id) {
-      this.showError("Cannot manage managers without a selected venue.");
+      this.showError('Cannot manage managers without a selected venue.');
       return;
     }
 
     const managerOptions$ = this.userService.getManagerOptions();
-    const selectedManagers$ = this.managesService.getManagersByVenueId(this.venue.id);
+    const selectedManagers$ = this.managesService.getManagersByVenueId(
+      this.venue.id
+    );
 
     forkJoin({
       options: managerOptions$,
-      selected: selectedManagers$
+      selected: selectedManagers$,
     }).subscribe({
       next: (response) => {
-        
         this.managerOptions = response.options;
         this.selectedUsers = response.selected;
 
         this.isManagementDialogVisible = true;
       },
       error: (error) => {
-        this.showError("An error occurred while preparing the manager management dialog.");
-      }
+        this.showError(
+          'An error occurred while preparing the manager management dialog.'
+        );
+      },
     });
   }
 
   submitManagerSelection() {
-    this.managesService.updateManagers(this.venue?.id ?? 0, this.selectedUsers)
-    .subscribe({
-      next: (response) => {
-        this.isManagementDialogVisible = false;
-      }, error: (error) => {
-        this.showError("An error has occurred while updating managers");
-      }
-    })
+    this.managesService
+      .updateManagers(this.venue?.id ?? 0, this.selectedUsers)
+      .subscribe({
+        next: (response) => {
+          this.isManagementDialogVisible = false;
+        },
+        error: (error) => {
+          this.showError('An error has occurred while updating managers');
+        },
+      });
   }
 
-  
   // toast handling
   showError(message: string) {
     this.messageService.add({

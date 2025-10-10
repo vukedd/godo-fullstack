@@ -9,6 +9,7 @@ import com.app.godo.exceptions.refreshToken.ValidationException;
 import com.app.godo.exceptions.registration.RegistrationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -99,5 +100,13 @@ public class AppExceptionHandler {
         String errorMessage = ex.getMessage();
 
         return new ResponseEntity<>(new BadRequestException(errorMessage), status);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<UnauthorizedException> handleBadRequestException(AuthenticationException ex) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        String errorMessage = "";
+
+        return new ResponseEntity<>(new UnauthorizedException(""), status);
     }
 }

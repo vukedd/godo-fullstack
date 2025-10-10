@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -24,4 +25,7 @@ public interface ManagesRepository extends JpaRepository<Manages, Long> {
     @Modifying
     @Query("UPDATE Manages m SET m.endDate = :endDate WHERE m.venue.id = :venueId AND m.manager.id IN :managerIds AND m.endDate IS NULL")
     void revokeManagement(@Param("venueId") Long venueId, @Param("managerIds") Set<Long> managerIds, @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT m FROM Manages m WHERE m.manager.username = :username AND m.venue.id = :venueId AND m.endDate IS NULL")
+    Optional<Manages> findManagement(@Param("username") String username, @Param("venueId") Long venueId);
 }

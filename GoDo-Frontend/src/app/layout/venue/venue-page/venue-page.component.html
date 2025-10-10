@@ -4,19 +4,34 @@
       class="font-bold bg-orange-400 p-3 m-1 border-none border-round-md text-black-alpha-90 hover:bg-orange-300"
       (click)="switchToEdit()"
     >
-      <i class="pi pi-pencil"></i>
+      <i class="pi pi-pencil text-xl"></i>
     </button>
     <button
       class="font-bold bg-red-600 p-3 m-1 border-none border-round-md text-black-alpha-90 hover:bg-red-400"
       (click)="showDialog()"
     >
-      <i class="pi pi-trash"></i>
+      <i class="pi pi-trash text-xl"></i>
     </button>
     <button
       class="font-bold bg-primary p-3 m-1 border-none border-round-md text-black-alpha-90 hover:bg-primary-300"
       (click)="showVenueManagementDialog()"
     >
-      <i class="pi pi-user-edit"></i>
+      <i class="pi pi-user-edit text-xl"></i>
+    </button>
+  </div>
+
+  <div *ngIf="this.isManager" class="flex justify-content-end w-full my-3">
+    <button
+      class="font-bold bg-orange-400 p-3 m-1 border-none border-round-md text-black-alpha-90 hover:bg-orange-300"
+      (click)="switchToEdit()"
+    >
+      <i class="pi pi-pencil text-xl"></i>
+    </button>
+        <button
+      class="font-bold bg-green-500 p-3 m-1 border-none border-round-md text-black-alpha-90 hover:bg-green-400"
+      [routerLink]="['/add-event', venue?.id]"
+    >
+      <i class="pi pi-calendar-plus text-xl"></i>
     </button>
   </div>
   <form class="grid" [formGroup]="editVenueForm">
@@ -167,41 +182,44 @@
   header="Manage Venue Managers"
   [modal]="true"
   [(visible)]="isManagementDialogVisible"
-  [style]="{ width: '30rem' }" 
-  [draggable]="false">
-
+  [style]="{ width: '30rem' }"
+  [draggable]="false"
+>
   <!-- Main Content Area -->
   <div class="field">
-    <label for="venue-managers" class="font-semibold">Select Venue Managers</label>
-    <p-multiSelect  
-        id="venue-managers"
-        placeholder="Select Managers" 
-        optionLabel="name"
-        [maxSelectedLabels]="5"
-        dataKey="id"
-        styleClass="w-full"
-        [(ngModel)]="selectedUsers" 
-        virtualScroll="true"
-        appendTo="body"
-        [options]="this.managerOptions"
-        optionLabel="username"
-        >
+    <label for="venue-managers" class="font-semibold"
+      >Select Venue Managers</label
+    >
+    <p-multiSelect
+      id="venue-managers"
+      placeholder="Select Managers"
+      optionLabel="name"
+      [maxSelectedLabels]="5"
+      dataKey="id"
+      styleClass="w-full"
+      [(ngModel)]="selectedUsers"
+      virtualScroll="true"
+      appendTo="body"
+      [options]="this.managerOptions"
+      optionLabel="username"
+    >
     </p-multiSelect>
   </div>
 
   <ng-template pTemplate="footer">
-    <p-button 
-        label="Cancel" 
-        severity="danger"
-        icon="pi pi-times" 
-        styleClass="p-button"
-        (click)="isManagementDialogVisible = false">
+    <p-button
+      label="Cancel"
+      severity="danger"
+      icon="pi pi-times"
+      styleClass="p-button"
+      (click)="isManagementDialogVisible = false"
+    >
     </p-button>
-    <p-button 
-        label="Submit" 
-        icon="pi pi-check"
-        (onClick)="submitManagerSelection()">
+    <p-button
+      label="Submit"
+      icon="pi pi-check"
+      (onClick)="submitManagerSelection()"
+    >
     </p-button>
   </ng-template>
-
 </p-dialog>

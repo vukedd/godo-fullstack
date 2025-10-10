@@ -10,6 +10,8 @@ import { ProfileStatusGuard } from './guards/profile-status-guard';
 import { CompleteProfileDetailsFormComponent } from './layout/forms/complete-profile-details-form/complete-profile-details-form.component';
 import { ProfilePageComponent } from './layout/user/profile/profile-page/profile-page.component';
 import { ChangePersonalInformationComponent } from './layout/user/profile/change-personal-information/change-personal-information.component';
+import { AddEventComponent } from './layout/event/add-event/add-event.component';
+import { ManagementGuard } from './guards/management-guard';
 
 export const routes: Routes = [
     {
@@ -65,5 +67,11 @@ export const routes: Routes = [
         path: 'edit-profile',
         component: ChangePersonalInformationComponent,
         canActivate: [AuthGuard, ProfileStatusGuard]
+    }, 
+    {
+        title: 'Add event',
+        path: 'add-event/:venueId',
+        component: AddEventComponent,
+        canActivate: [AuthGuard, ProfileStatusGuard, ManagementGuard]
     }
 ];
