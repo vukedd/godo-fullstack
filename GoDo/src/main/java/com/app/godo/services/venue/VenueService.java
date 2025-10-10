@@ -71,17 +71,6 @@ public class VenueService {
         return VenueOverviewDto.fromEntity(venue);
     }
 
-    public CreateVenueRequestDto convertToCreateVenueRequest(String venueJson) {
-        CreateVenueRequestDto venue;
-        try {
-            venue = objectMapper.readValue(venueJson, CreateVenueRequestDto.class);
-        } catch (JsonProcessingException e) {
-            throw new ParseException("An expected error has occurred please try again in a moment!");
-        }
-
-        return venue;
-    }
-
     public VenueOverviewDto findVenueById(long venueId) {
         Venue venue = venueRepository.findVenueById(venueId)
                 .orElseThrow(() -> new NotFoundException("The venue you were looking for can't be found"));
@@ -108,5 +97,16 @@ public class VenueService {
                 .orElseThrow(() -> new NotFoundException("The venue you were looking for can't be found"));
 
         venueRepository.delete(venue);
+    }
+
+    public CreateVenueRequestDto convertToCreateVenueRequest(String venueJson) {
+        CreateVenueRequestDto venue;
+        try {
+            venue = objectMapper.readValue(venueJson, CreateVenueRequestDto.class);
+        } catch (JsonProcessingException e) {
+            throw new ParseException("An expected error has occurred please try again in a moment!");
+        }
+
+        return venue;
     }
 }

@@ -32,5 +32,6 @@ public class Image {
 
     @OneToOne
     @JoinColumn(name = "event_id", referencedColumnName = "id")
+    @JsonBackReference
     private Event eventImageOf;
 }
