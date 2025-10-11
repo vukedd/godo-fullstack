@@ -1,0 +1,62 @@
+<div class="px-4 lg:px-8 mt-8">
+  <div class="grid">
+    <div class="col-12 lg:col-5 flex align-items-center justify-content-center">
+      <img
+        alt="Event image"
+        [src]="event?.imagePath"
+        class="w-full lg:w-30rem border-round-lg shadow-2"
+      />
+    </div>
+
+    <div class="col-12 lg:col-7 flex flex-column justify-content-center">
+      <div class="lg:pl-5">
+        <div
+          class="flex flex-column align-items-center lg:align-items-start gap-2"
+        >
+          <h1 class="text-6xl font-bold m-0 text-center lg:text-left">
+            {{ event?.name }}
+            <i
+              class="pi pi-sync text-3xl text-red-700 font-bold"
+              pTooltip="This event is ocurring every week"
+              *ngIf="this.isRecurrent"
+            ></i>
+          </h1>
+
+          <span
+            [style.color]="eventTypeColor(event)"
+            class="text-2xl"
+            id="venueTypeLabel"
+          >
+            {{ this.eventTypeMap.get(this.eventType) }}
+          </span>
+        </div>
+        <h2
+          class="text-2xl text-color-white font-normal underline mt-5"
+          *ngIf="(event?.price > 0)"
+        >
+          ${{ event?.price}} per ticket
+        </h2>
+        <h1
+          class="text-3xl text-color-white font-normal underline mt-5"
+          *ngIf="(event?.price <= 0)"
+        >
+          FREE ENTRANCE
+        </h1>
+        <p
+          class="mt-6 line-height-3 text-color-secondary text-center lg:text-left"
+        >
+          {{ event?.description }}
+        </p>
+      </div>
+    </div>
+    <div
+      class="col-12 mt-7 flex justify-content-center align-items-center flex-column"
+    >
+      <span class="text-4xl font-light">Organized by</span>
+            <div
+        class="border-top-1 border-white-alpha-50 border-2 w-full my-2"
+      ></div>
+    </div>
+    <app-event-page-venue-card [venue]="this.venue" class="col-12"></app-event-page-venue-card>
+  </div>
+</div>

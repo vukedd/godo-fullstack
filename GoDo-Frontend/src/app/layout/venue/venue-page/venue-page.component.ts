@@ -23,6 +23,9 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { UserService } from '../../../services/user/user.service';
 import { ManagesService } from '../../../services/manages/manages.service';
 import { forkJoin } from 'rxjs';
+import { EventService } from '../../../services/event/event.service';
+import { CardModule } from 'primeng/card';
+import { UpcomingEventCardComponent } from "../../event/upcoming-event-card/upcoming-event-card.component";
 
 @Component({
   selector: 'app-venue-page',
@@ -38,7 +41,9 @@ import { forkJoin } from 'rxjs';
     ToastModule,
     DialogModule,
     MultiSelectModule,
-    RouterModule
+    CardModule,
+    RouterModule,
+    UpcomingEventCardComponent
 ],
   templateUrl: './venue-page.component.html',
   styleUrl: './venue-page.component.css',
@@ -52,9 +57,11 @@ export class VenuePageComponent implements OnInit {
   isDeleteDialogVisible: boolean = false;
   isManagementDialogVisible: boolean = false;
   isManager: boolean = false;
-
+  
   selectedUsers: any;
   managerOptions: any;
+
+  upcomingEvents: any[] = [];
 
   VenueTypeMap = new Map<string, string>([
     ['CULTURAL_CENTER', 'Cultural Center'],
@@ -98,7 +105,8 @@ export class VenuePageComponent implements OnInit {
     private messageService: MessageService,
     private router: Router,
     private userService: UserService,
-    private managesService: ManagesService
+    private managesService: ManagesService,
+    private eventService: EventService
   ) {}
 
   ngOnInit(): void {
@@ -137,15 +145,25 @@ export class VenuePageComponent implements OnInit {
       },
     });
 
-    this.managesService.doesManagementExist(venueId, this.authService.getUsername() ?? '')
-    .subscribe({
+    this.managesService
+      .doesManagementExist(venueId, this.authService.getUsername() ?? '')
+      .subscribe({
+        next: (response) => {
+          this.isManager = response.exists;
+        },
+        error: (error) => {
+          this.isManager = false;
+        },
+      });
+
+    this.eventService.getUpcomingEventsByVenueId(venueId).subscribe({
       next: (response) => {
-        this.isManager = response.exists;
+        this.upcomingEvents = response;
+        for (let event in response) {
+        }
       },
-      error: (error) => {
-        this.isManager = false;
-      }
-    })
+      error: (error) => {},
+    });
   }
 
   venueTypeColor(): string {

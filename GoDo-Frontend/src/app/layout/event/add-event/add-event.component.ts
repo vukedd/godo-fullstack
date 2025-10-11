@@ -19,7 +19,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { TooltipModule } from 'primeng/tooltip';
 import { CreateEventDto } from '../../../models/event/createEventDto';
 import { EventService } from '../../../services/event/event.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-event',
@@ -63,7 +63,8 @@ export class AddEventComponent implements OnInit {
   constructor(
     public messageService: MessageService,
     public eventService: EventService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -138,6 +139,7 @@ export class AddEventComponent implements OnInit {
         .subscribe({
           next: (response) => {
             this.propagateSuccess('Event successfully created!');
+            this.router.navigate(['venue', venueId]);
           },
           error: (error) => {
             this.propagateError(error.error.message);

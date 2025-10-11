@@ -1,6 +1,7 @@
 package com.app.godo.repositories.event;
 
 import com.app.godo.models.Event;
+import com.app.godo.models.Venue;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,4 +18,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT e FROM Event e WHERE LOWER(e.name) = LOWER(:name) AND e.recurrent IS true")
     List<Event> findByRecurrentIsTrueAndName(@Param("name") String name);
 
+    List<Event> findByVenue(Venue venue);
+
+    List<Event> findByVenueAndDateAfter(Venue venue, LocalDate dateAfter);
 }

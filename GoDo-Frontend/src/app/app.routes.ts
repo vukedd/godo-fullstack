@@ -12,6 +12,7 @@ import { ProfilePageComponent } from './layout/user/profile/profile-page/profile
 import { ChangePersonalInformationComponent } from './layout/user/profile/change-personal-information/change-personal-information.component';
 import { AddEventComponent } from './layout/event/add-event/add-event.component';
 import { ManagementGuard } from './guards/management-guard';
+import { EventPageComponent } from './layout/event/event-page/event-page.component';
 
 export const routes: Routes = [
     {
@@ -73,5 +74,11 @@ export const routes: Routes = [
         path: 'add-event/:venueId',
         component: AddEventComponent,
         canActivate: [AuthGuard, ProfileStatusGuard, ManagementGuard]
+    }, 
+    {
+        title: 'Event',
+        path: 'event/:id',
+        component: EventPageComponent,
+        canActivate: [AuthGuard, ProfileStatusGuard]
     }
 ];

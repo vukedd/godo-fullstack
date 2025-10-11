@@ -1,6 +1,7 @@
 package com.app.godo.task;
 
 import com.app.godo.models.Event;
+import com.app.godo.models.Image;
 import com.app.godo.repositories.event.EventRepository;
 import com.app.godo.repositories.venue.VenueRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class RecurrentEventGeneratorTask {
 
     private static final Logger logger = LogManager.getLogger(RecurrentEventGeneratorTask.class);
 
-    @Scheduled(cron = "0 0 10 * * ?")
+    @Scheduled(cron = "0 48 14 * * ?")
     @Transactional
     public void generateFutureRecurrentEvents() {
         logger.info("Starting recurrent event generation task...");
@@ -76,8 +77,13 @@ public class RecurrentEventGeneratorTask {
                     .price(templateEvent.getPrice())
                     .recurrent(true)
                     .venue(templateEvent.getVenue())
-                    .image(templateEvent.getImage())
                     .build();
+
+            newInstance.setImage(
+                    Image.builder()
+                            .eventImageOf(newInstance)
+                            .path(templateEvent.getImage().getPath()).build()
+            );
 
             newInstances.add(newInstance);
             nextDate = nextDate.plusWeeks(1);

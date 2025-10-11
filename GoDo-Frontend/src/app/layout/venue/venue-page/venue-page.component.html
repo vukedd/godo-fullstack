@@ -27,7 +27,7 @@
     >
       <i class="pi pi-pencil text-xl"></i>
     </button>
-        <button
+    <button
       class="font-bold bg-green-500 p-3 m-1 border-none border-round-md text-black-alpha-90 hover:bg-green-400"
       [routerLink]="['/add-event', venue?.id]"
     >
@@ -38,7 +38,7 @@
     <div class="col-12 lg:col-5 flex align-items-center justify-content-center">
       <img
         src="{{ venue?.imagePath }}"
-        alt="Pupin Bar"
+        alt="Venue image"
         class="w-full lg:w-30rem border-round-lg shadow-2"
       />
     </div>
@@ -143,11 +143,14 @@
     >
       <span class="text-4xl font-light">Upcoming events</span>
       <div
-        class="border-top-1 border-white-alpha-50 border-2 w-full my-3"
+        class="border-top-1 border-white-alpha-50 border-2 w-full my-2"
       ></div>
     </div>
 
-    <div class="col-12"></div>
+    <app-upcoming-event-card *ngFor="let event of this.upcomingEvents" [event]="event" class="col-12"></app-upcoming-event-card>
+    <div class="col-12 flex justify-content-center" *ngIf="this.upcomingEvents.length == 0">
+      <span class="text-white text-2xl text-center">There are currently no upcoming events</span>
+    </div>
   </form>
 </div>
 

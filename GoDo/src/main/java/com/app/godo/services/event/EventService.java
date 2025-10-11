@@ -1,6 +1,8 @@
 package com.app.godo.services.event;
 
 import com.app.godo.dtos.event.CreateEventRequestDto;
+import com.app.godo.dtos.event.EventDetailsDto;
+import com.app.godo.dtos.event.UpcomingEventDto;
 import com.app.godo.dtos.venue.CreateVenueRequestDto;
 import com.app.godo.exceptions.general.ConflictException;
 import com.app.godo.exceptions.general.NotFoundException;
@@ -9,6 +11,7 @@ import com.app.godo.models.Event;
 import com.app.godo.models.Image;
 import com.app.godo.models.Venue;
 import com.app.godo.repositories.event.EventRepository;
+import com.app.godo.repositories.image.ImageRepository;
 import com.app.godo.repositories.venue.VenueRepository;
 import com.app.godo.services.files.FileStorageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,6 +33,8 @@ public class EventService {
     private final EventRepository eventRepository;
     private final VenueRepository venueRepository;
     private final FileStorageService fileStorageService;
+    private final ImageRepository imageRepository;
+
     private final ObjectMapper objectMapper;
 
     private static final int WEEKS_TO_GENERATE_IN_ADVANCE = 1;
@@ -111,6 +116,25 @@ public class EventService {
         return dto;
     }
 
+    public List<UpcomingEventDto> findAllUpcomingEventsByVenueId(long venueId) {
+        Venue venue;
+
+        try {
+            venue = venueRepository.findById(venueId)
+                    .orElseThrow(() -> new NotFoundException("Venue not found"));
+        } catch (NotFoundException ex) {
+            logger.warn("Couldn't fetch upcoming event, Venue with the Id: {} couldn't be found..", venueId);
+            throw new NotFoundException(ex.getMessage());
+        }
+
+        logger.info("Finding upcoming events for venue: {}", venue.getName());
+
+        List<Event> upcomingEvents = eventRepository.findByVenueAndDateAfter(venue, LocalDate.now());
+
+        logger.info("Found {} upcoming events for this venue", upcomingEvents.size());
+
+        return upcomingEvents.stream().map(UpcomingEventDto::fromEntity).toList();
+    }
 
     public CreateEventRequestDto convertToCreateEventRequest(String eventJson) {
         CreateEventRequestDto event;
@@ -121,5 +145,24 @@ public class EventService {
         }
 
         return event;
+    }
+
+    public EventDetailsDto findEventById(long eventId) {
+        Event event;
+
+        logger.info("Looking for event with the Id: {}", eventId);
+
+        try {
+            event = eventRepository.findById(eventId)
+                    .orElseThrow(() -> new NotFoundException("the event you were looking for couldn't be found!"));
+        } catch (NotFoundException ex) {
+            logger.warn("The event you were looking for couldn't be found!");
+            throw new NotFoundException(ex.getMessage());
+        }
+
+        logger.info("The event you were looking has been found! Event name: {}", event.getName());
+
+
+        return EventDetailsDto.fromEntity(event);
     }
 }

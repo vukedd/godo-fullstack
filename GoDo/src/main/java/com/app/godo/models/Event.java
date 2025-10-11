@@ -47,7 +47,7 @@ public class Event {
     @JoinColumn(name = "venue_id", nullable = false, referencedColumnName = "id")
     private Venue venue;
 
-    @OneToOne(mappedBy = "eventImageOf", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "eventImageOf", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private Image image;
 }
