@@ -24,6 +24,37 @@ INSERT INTO venues (name, description, address, average_rating, type, created_at
                                                                                           ('Oceanic Wonders Aquarium', 'An immersive underwater experience with thousands of marine species.', '123 Waterfront Pier, Dawnsville', 4.7, 7, '2023-07-01'),
                                                                                           ('The Grand Public Library', 'A historic landmark and repository of knowledge, open to all.', '1 Grand Circle, Metroburg', 4.9, 0, '2023-08-08');
 
+INSERT INTO events (name, description, event_type, date, address, price, recurrent, venue_id) VALUES (
+                                                                                                                   'Weekly Jazz Night',
+                                                                                                                   'An evening of smooth jazz featuring local artists. Full bar and dinner menu available.',
+                                                                                                                   0,
+                                                                                                                   '2025-10-13',
+                                                                                                                   '123 Melody Lane, Musicville, USA',
+                                                                                                                   15.50,
+                                                                                                                   true,
+                                                                                                                   1
+                                                                                                               );
+INSERT INTO events (name, description, event_type, date, address, price, recurrent, venue_id) VALUES (
+                                                                                                         'Weekly Jazz Night',
+                                                                                                         'An evening of smooth jazz featuring local artists. Full bar and dinner menu available.',
+                                                                                                         0,
+                                                                                                         '2025-10-20',
+                                                                                                         '123 Melody Lane, Musicville, USA',
+                                                                                                         15.50,
+                                                                                                         true,
+                                                                                                         1
+                                                                                                     );
+
+INSERT INTO events (name, description, event_type, date, address, price, recurrent, venue_id) VALUES (
+                                                                                                         'Coconut',
+                                                                                                         'An evening of smooth jazz featuring local artists. Full bar and dinner menu available.',
+                                                                                                         0,
+                                                                                                         '2025-10-20',
+                                                                                                         '123 Melody Lane, Musicville, USA',
+                                                                                                         15.50,
+                                                                                                         true,
+                                                                                                         1
+                                                                                                     );
 
 INSERT INTO images (path, user_id, venue_id, event_id) VALUES
                                                                ('https://picsum.photos/800/600', null, 1, null),
@@ -40,6 +71,8 @@ INSERT INTO images (path, user_id, venue_id, event_id) VALUES
                                                                ('https://picsum.photos/800/600', null, 12, null),
                                                                ('https://picsum.photos/800/600', null, 13, null),
                                                                ('https://picsum.photos/800/600', null, 14, null),
-                                                               ('https://picsum.photos/800/600', null, 15, null);
+                                                               ('https://picsum.photos/800/600', null, 15, null),
+                                                               ('https://picsum.photos/800/600', null, null, 1),
+                                                               ('https://picsum.photos/800/600', null, null, 2);
 
-INSERT INTO manages(start_date, manager_id, venue_id) VALUES ('2025-06-06', 2, 1)
+INSERT INTO manages(start_date, manager_id, venue_id) VALUES ('2025-06-06', 2, 1);

@@ -2,6 +2,7 @@ package com.app.godo.services.event;
 
 import com.app.godo.dtos.event.CreateEventRequestDto;
 import com.app.godo.dtos.venue.CreateVenueRequestDto;
+import com.app.godo.exceptions.general.ConflictException;
 import com.app.godo.exceptions.general.NotFoundException;
 import com.app.godo.exceptions.general.ParseException;
 import com.app.godo.models.Event;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class EventService {
     private final FileStorageService fileStorageService;
     private final ObjectMapper objectMapper;
 
-    private static final int WEEKS_TO_GENERATE_IN_ADVANCE = 4;
+    private static final int WEEKS_TO_GENERATE_IN_ADVANCE = 1;
     private static final Logger logger = LogManager.getLogger(EventService.class);
 
     @Transactional
@@ -52,6 +52,11 @@ public class EventService {
         String path = "http://localhost:8080/uploads/" + fileStorageService.storeFile(image);
 
         if (dto.isRecurrent()) {
+            if (!eventRepository.findByRecurrentIsTrueAndName(dto.getName()).isEmpty()) {
+                logger.warn("Event creation failed. A recurrent event with the name {} already exists...", dto.getName());
+                throw new ConflictException("a recurrent event with the same name already exists");
+            }
+
             logger.info("Event is recurrent, a series of events will be created!");
 
             LocalDate currentDate = dto.getDate();
