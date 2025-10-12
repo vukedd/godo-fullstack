@@ -13,6 +13,7 @@ import { ChangePersonalInformationComponent } from './layout/user/profile/change
 import { AddEventComponent } from './layout/event/add-event/add-event.component';
 import { ManagementGuard } from './guards/management-guard';
 import { EventPageComponent } from './layout/event/event-page/event-page.component';
+import { ExploreEventPageComponent } from './layout/event/explore-event-page/explore-event-page.component';
 
 export const routes: Routes = [
     {
@@ -79,6 +80,12 @@ export const routes: Routes = [
         title: 'Event',
         path: 'event/:id',
         component: EventPageComponent,
+        canActivate: [AuthGuard, ProfileStatusGuard]
+    },
+    {
+        title: 'Explore events',
+        path: 'event',
+        component: ExploreEventPageComponent,
         canActivate: [AuthGuard, ProfileStatusGuard]
     }
 ];

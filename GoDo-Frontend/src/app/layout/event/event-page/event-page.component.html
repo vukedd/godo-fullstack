@@ -21,6 +21,7 @@
               *ngIf="this.isRecurrent"
             ></i>
           </h1>
+          <span class="text-color-secondary"> {{ event?.address }}</span>
 
           <span
             [style.color]="eventTypeColor(event)"
@@ -31,13 +32,13 @@
           </span>
         </div>
         <h2
-          class="text-2xl text-color-white font-normal underline mt-5"
+          class="text-2xl text-color-white font-normal underline mt-5 text-center lg:text-left"
           *ngIf="(event?.price > 0)"
         >
-          ${{ event?.price}} per ticket
+          ${{ event?.price }} per ticket
         </h2>
         <h1
-          class="text-3xl text-color-white font-normal underline mt-5"
+          class="text-3xl text-color-white font-normal underline mt-5 text-center"
           *ngIf="(event?.price <= 0)"
         >
           FREE ENTRANCE

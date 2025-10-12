@@ -4,6 +4,7 @@ import com.app.godo.dtos.event.CreateEventRequestDto;
 import com.app.godo.dtos.event.EventDetailsDto;
 import com.app.godo.dtos.event.UpcomingEventDto;
 import com.app.godo.dtos.venue.CreateVenueRequestDto;
+import com.app.godo.enums.EventType;
 import com.app.godo.exceptions.general.ConflictException;
 import com.app.godo.exceptions.general.NotFoundException;
 import com.app.godo.exceptions.general.ParseException;
@@ -14,12 +15,16 @@ import com.app.godo.repositories.event.EventRepository;
 import com.app.godo.repositories.image.ImageRepository;
 import com.app.godo.repositories.venue.VenueRepository;
 import com.app.godo.services.files.FileStorageService;
+import com.app.godo.specifications.EventSpecification;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,12 +38,37 @@ public class EventService {
     private final EventRepository eventRepository;
     private final VenueRepository venueRepository;
     private final FileStorageService fileStorageService;
-    private final ImageRepository imageRepository;
 
     private final ObjectMapper objectMapper;
 
     private static final int WEEKS_TO_GENERATE_IN_ADVANCE = 1;
     private static final Logger logger = LogManager.getLogger(EventService.class);
+
+    public Page<EventDetailsDto> filterEvents(String filter, double priceFrom, double priceTo, int eventType, LocalDate eventDate, Pageable eventPage) {
+        Specification<Event> spec = EventSpecification.empty();
+
+        if (filter != null && !filter.isEmpty()) {
+            spec = spec.and(EventSpecification.hasText(filter));
+        }
+
+        if (priceFrom != -1) {
+            spec = spec.and(EventSpecification.priceIsGreaterThanOrEqual(priceFrom));
+        }
+
+        if (priceTo != -1) {
+            spec = spec.and(EventSpecification.priceIsLessThanOrEqual(priceTo));
+        }
+
+        if (eventType != -1) {
+            spec = spec.and(EventSpecification.hasEventType(EventType.values()[eventType]));
+        }
+
+        if (eventDate != null) {
+            spec = spec.and(EventSpecification.dateIsEqualTo(eventDate));
+        }
+
+        return eventRepository.findAll(spec, eventPage).map(EventDetailsDto::fromEntity);
+    }
 
     @Transactional
     public CreateEventRequestDto createEvent(long venueId, CreateEventRequestDto dto, MultipartFile image) {

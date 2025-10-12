@@ -3,7 +3,7 @@
     <span class="text-4xl text-primary">GoDo</span>
     <div *ngIf="isLoggedIn() && !isPending()">
         <p-button [link]="true" styleClass="text-xl" [routerLink]="'/dashboard'">Dashboard</p-button>
-        <p-button [link]="true" styleClass="text-xl">Events</p-button>
+        <p-button [link]="true" styleClass="text-xl" [routerLink]="'/event'">Events</p-button>
         <p-button [link]="true" styleClass="text-xl" [routerLink]="'/venue'">Venues</p-button>
     </div>
     <div *ngIf="!isLoggedIn()"></div>
@@ -31,7 +31,7 @@
     <div class="flex flex-column justify-content-between h-full">
         <div class="flex flex-column justify-content-center align-items-center" *ngIf="!isPending()">
             <p-button [link]="true" styleClass="font-bold text-3xl" [routerLink]="'/dashboard'">Dashboard</p-button>
-            <p-button [link]="true" styleClass="font-bold text-3xl">Events</p-button>
+            <p-button [link]="true" styleClass="font-bold text-3xl" [routerLink]="'/event'">Events</p-button>
             <p-button [link]="true" styleClass="font-bold text-3xl" [routerLink]="'/venue'">Venues</p-button>
         </div>
         <div  *ngIf="isPending()">

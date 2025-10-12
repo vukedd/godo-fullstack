@@ -22,7 +22,7 @@ export class EventPageComponent implements OnInit {
   public eventTypeMap = new Map<string, string>([
     ['PARTY', 'Party'],
     ['FESTIVAL', 'Festival'],
-    ['STANDUP_AND_THEATER', 'Standup & Theater'],
+    ['STANDUP_AND_THEATER', 'Standup and Theater'],
     ['MISCELLANEOUS', 'Miscellaneous'],
     ['CULTURE', 'Culture'],
     ['EXHIBITION', 'Exhibition'],
@@ -76,7 +76,6 @@ export class EventPageComponent implements OnInit {
       .subscribe({
         next: (venue) => {
           this.venue = venue;
-          console.log(venue);
         },
         error: (err) => {
           console.log(err);

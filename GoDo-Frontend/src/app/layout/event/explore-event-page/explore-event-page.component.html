@@ -1,0 +1,85 @@
+<div
+  class="flex justify-content-center flex-column align-items-center mt-8 w-full"
+>
+  <div
+    class="flex justify-content-between lg:w-5 w-full my-4 align-items-center"
+  >
+    <p-button (onClick)="clearFilterInput()" severity="danger" class="ml-5">
+      <i class="pi pi-filter-slash"></i>
+    </p-button>
+    <span class="text-primary text-4xl font-bold">Explore events</span>
+    <p-button (onClick)="toggleFilterForm()" class="mr-5">
+      <i class="pi pi-filter"></i>
+    </p-button>
+  </div>
+  <form
+    class="flex flex-column justify-content-center align-items-center w-full"
+    [formGroup]="filterForm"
+    *ngIf="this.isFilterFormShown"
+  >
+    <input
+      type="text"
+      pInputText
+      class="mx-2 w-full lg:w-5 my-2 border-round-top-xl"
+      id="input-filter"
+      placeholder="Search by event name, venue name or address"
+      formControlName="filter"
+    />
+    <div class="w-full lg:w-5 flex flex-row align-items-center">
+      <p-select
+        optionLabel="name"
+        placeholder="Select event type"
+        class="mr-5 w-full l my-2 border-round-xs"
+        [options]="this.eventTypes"
+        formControlName="eventType"
+      />
+      <p-datepicker class="border-round-xs" placeholder="Enter date" showIcon formControlName="date"/>
+    </div>
+    <div
+      class="w-full lg:w-5 flex justify-content-center flex-column align-items-center my-2"
+    >
+      <div class="flex flex-row align-items-center w-full">
+        <input
+          pInputText
+          class="border-round-xs w-full"
+          [min]="0"
+          [max]="50000"
+          type="number"
+          placeholder="Price from ($)"
+          formControlName="priceFrom"
+        />
+        <span class="mx-4">-</span>
+        <input
+          pInputText
+          class="border-round-xs w-full"
+          [min]="0"
+          [max]="50000"
+          type="number"
+          placeholder="Price to ($)"
+          formControlName="priceTo"
+        />
+      </div>
+    </div>
+    <button
+      class="mx-2 w-full lg:w-5 my-2 py-2 bg-primary border-none border-round-bottom-lg hover:bg-primary-200 font-bold"
+      (click)="filter()"
+    >
+      Search
+    </button>
+  </form>
+  <div class="grid w-full mt-5" *ngIf="this.events.length > 0">
+    <div class="md:col-3 p-2 col-12" *ngFor="let event of events">
+      <app-event-card [event]="event"></app-event-card>
+    </div>
+  </div>
+  <p-paginator
+    [first]="this.first"
+    [rows]="this.rows"
+    [totalRecords]="this.totalElements"
+    *ngIf="this.events.length > 0"
+  />
+  <h2 class="text-center mt-5" *ngIf="this.events.length == 0">
+    No events have been found...
+  </h2>
+  <!-- (onPageChange)="onPageChange($event)" -->
+</div>

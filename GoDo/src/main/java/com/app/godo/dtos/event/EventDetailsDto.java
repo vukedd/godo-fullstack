@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventDetailsDto {
+    private long id;
     private String name;
     private String description;
     private LocalDate date;
@@ -21,11 +22,13 @@ public class EventDetailsDto {
     private double price;
     private String imagePath;
     private boolean recurrent;
+    private String address;
     private long venueId;
 
 
     public static EventDetailsDto fromEntity(Event event) {
         return new EventDetailsDto(
+                event.getId(),
                 event.getName(),
                 event.getDescription(),
                 event.getDate(),
@@ -33,6 +36,7 @@ public class EventDetailsDto {
                 event.getPrice(),
                 event.getImage().getPath(),
                 event.isRecurrent(),
+                event.getAddress(),
                 event.getVenue().getId()
         );
     }

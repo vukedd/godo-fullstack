@@ -1,4 +1,4 @@
-package com.app.godo.task;
+package com.app.godo.tasks;
 
 import com.app.godo.models.Event;
 import com.app.godo.models.Image;
@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RecurrentEventGeneratorTask {
 
-    private final VenueRepository venueRepository;
     private final EventRepository eventRepository;
 
     private static final int GENERATION_THRESHOLD_WEEKS = 1;
