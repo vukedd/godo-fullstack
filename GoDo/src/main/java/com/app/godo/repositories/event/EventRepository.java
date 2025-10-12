@@ -27,4 +27,6 @@ public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecific
     List<Event> findByVenueAndDateAfter(Venue venue, LocalDate dateAfter);
 
     Page<Event> findAll(Specification<Event> spec, Pageable eventPage);
+
+    List<Event> findAllByDateEquals(LocalDate now);
 }

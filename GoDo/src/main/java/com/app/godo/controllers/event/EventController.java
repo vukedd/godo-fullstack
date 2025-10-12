@@ -23,6 +23,11 @@ import java.util.List;
 public class EventController {
     private final EventService eventService;
 
+    @GetMapping("/today")
+    public ResponseEntity<List<EventDetailsDto>> findEventsHappeningToday() {
+        return ResponseEntity.ok(eventService.findEventsHappeningToday());
+    }
+
     @GetMapping
     public ResponseEntity<?> filterEvents (
             @RequestParam(value = "filter", defaultValue = "") String filter,

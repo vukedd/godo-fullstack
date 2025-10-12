@@ -11,6 +11,10 @@ import { FilterEventDto } from '../../models/event/FilterEventDto';
 export class EventService {
   constructor(private http: HttpClient) {}
 
+  public getEventsHappeningToday() : Observable<any> {
+    return this.http.get(`${environment.apiUrl}/event/today`);
+  }
+
   public filterEvents(
     dto: FilterEventDto,
     pageNumber: number

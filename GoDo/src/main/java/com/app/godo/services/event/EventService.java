@@ -70,6 +70,11 @@ public class EventService {
         return eventRepository.findAll(spec, eventPage).map(EventDetailsDto::fromEntity);
     }
 
+    public List<EventDetailsDto> findEventsHappeningToday() {
+        return eventRepository.findAllByDateEquals(LocalDate.now()).stream().map(EventDetailsDto::fromEntity).toList();
+    }
+
+
     @Transactional
     public CreateEventRequestDto createEvent(long venueId, CreateEventRequestDto dto, MultipartFile image) {
         Venue venue;
