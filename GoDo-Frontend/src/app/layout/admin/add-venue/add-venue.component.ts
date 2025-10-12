@@ -18,7 +18,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { VenueService } from '../../../services/venue/venue.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { Toast } from "primeng/toast";
 
 @Component({
   selector: 'app-add-venue',

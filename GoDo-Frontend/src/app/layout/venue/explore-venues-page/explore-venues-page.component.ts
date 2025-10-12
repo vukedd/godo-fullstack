@@ -77,7 +77,7 @@ export class ExploreVenuesPageComponent implements OnInit {
   loadVenues(filterVenueDto: FilterVenueDto, page: number): void {
     this.venueService
       .filterVenues(
-        { filter: this.currentFilter, venueType: this.currentType.value },
+        filterVenueDto,
         page
       )
       .subscribe({

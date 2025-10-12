@@ -1,5 +1,6 @@
 package com.app.godo.controllers.venue;
 
+import com.app.godo.dtos.manages.ManagementExistsDto;
 import com.app.godo.dtos.manages.ManagesOverviewDto;
 import com.app.godo.dtos.user.UserManagerOptionDto;
 import com.app.godo.services.venue.ManagesService;
@@ -43,5 +44,14 @@ public class ManagesController {
     ) {
         managesService.updateManagersByVenueId(venueId, managerOptionDtos, utils.extractToken(authHeader));
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("venue/exists/{venueId}/{username}")
+    public ResponseEntity<ManagementExistsDto> doesManagementExist(
+            @PathVariable long venueId,
+            @PathVariable String username,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        return ResponseEntity.ok(managesService.doesManagementExist(username, venueId, utils.extractToken(authHeader)));
     }
 }

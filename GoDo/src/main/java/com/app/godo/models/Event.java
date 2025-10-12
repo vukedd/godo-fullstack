@@ -1,13 +1,16 @@
 package com.app.godo.models;
 
 import com.app.godo.enums.EventType;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Data
 @Entity
 @Builder
 @AllArgsConstructor
@@ -44,6 +47,7 @@ public class Event {
     @JoinColumn(name = "venue_id", nullable = false, referencedColumnName = "id")
     private Venue venue;
 
-    @OneToOne
+    @OneToOne(mappedBy = "eventImageOf", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private Image image;
 }

@@ -1,0 +1,152 @@
+<div
+  class="flex justify-content-center flex-column align-items-center mt-8 w-full"
+>
+  <form
+    class="flex justify-content-center align-items-center w-full"
+    [formGroup]="addEventForm"
+  >
+    <div class="card p-5 w-full lg:w-8">
+      <h1 class="text-primary text-center mb-5">Add Event</h1>
+
+      <div class="grid p-fluid">
+        <div class="col-12 lg:col-6">
+          <div class="field my-2">
+            <label for="name">Name:</label>
+            <input
+              id="name"
+              pInputText
+              autocomplete="off"
+              class="w-full mt-2"
+              formControlName="name"
+              placeholder="Enter event name"
+              pTooltip="Name must contain 3 to 50 characters"
+            />
+          </div>
+
+          <div class="field my-3">
+            <label for="description">Description:</label>
+            <textarea
+              id="description"
+              rows="6"
+              pTextarea
+              style="resize: none"
+              class="w-full mt-2"
+              placeholder="Enter event description"
+              formControlName="description"
+            ></textarea>
+          </div>
+
+          <div class="field my-3 flex flex-column">
+            <label for="type">Type:</label>
+            <p-select
+              id="type"
+              optionLabel="name"
+              placeholder="Select event type"
+              class="mt-2"
+              [options]="this.eventTypes"
+              formControlName="type"
+              pTooltip="Event type must be selected"
+            ></p-select>
+          </div>
+
+          <div class="field my-3">
+            <label for="address">Address:</label>
+            <input
+              id="address"
+              pInputText
+              autocomplete="off"
+              class="w-full mt-2"
+              placeholder="Enter event address"
+              formControlName="address"
+              pTooltip="Please enter a valid address"
+            />
+          </div>
+        </div>
+
+        <div class="col-12 lg:col-6">
+          <div class="field lg:my-3">
+            <label for="dateOfBirth" class="mb-2">Date:</label>
+            <p-datepicker
+              id="eventDate"
+              placeholder="Enter event date"
+              formControlName="eventDate"
+              [minDate]="minDate"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+              pTooltip="Event date must be selected"
+            ></p-datepicker>
+          </div>
+          <div class="field my-3">
+            <label for="price" class="mb-2">Ticket price: ($)</label>
+            <input
+              id="price"
+              type="number"
+              pInputText
+              max="50000"
+              min="1"
+              autocomplete="off"
+              class="w-full my-2"
+              placeholder="Enter ticket price"
+              formControlName="price"
+              pTooltip="If not free, price field can't be empty"
+            />
+            <div>
+              <input
+                type="checkbox"
+                id="free"
+                name="free"
+                class="mx-2"
+                (change)="this.toggleFree()"
+              />
+              <label for="free">Free entry</label>
+            </div>
+          </div>
+          <div class="field my-5">
+            <input
+              type="checkbox"
+              formControlName="isRecurrent"
+              id="recurrent"
+              name="recurrent"
+              class="mx-2"
+            />
+            <label for="recurrent">Event is recurrent</label>
+            <br />
+            <span class="text-color-secondary"
+              >Don't forget to specify if the event is recurrent or not</span
+            >
+          </div>
+          <div
+            class="flex flex-column justify-content-center align-items-center my-2 w-full"
+          >
+            <span class="my-2">Event picture:</span>
+            <p-fileupload
+              mode="basic"
+              name="demo[]"
+              chooseIcon="pi pi-upload"
+              [customUpload]="true"
+              accept="image/*"
+              maxFileSize="1000000"
+              [auto]="true"
+              chooseLabel="Browse"
+              (onSelect)="onUpload($event)"
+              pTooltip="Profile picture must be selected"
+            />
+            <span class="text-gray-300 mt-2">{{
+              this.selectedFile?.name
+            }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-content-center mt-6">
+        <p-button
+          type="submit"
+          label="Submit"
+          icon="pi pi-check"
+          [disabled]="!isValid()"
+          (onClick)="submitForm()"
+        ></p-button>
+      </div>
+    </div>
+  </form>
+</div>

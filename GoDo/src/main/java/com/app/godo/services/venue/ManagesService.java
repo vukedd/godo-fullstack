@@ -1,5 +1,6 @@
 package com.app.godo.services.venue;
 
+import com.app.godo.dtos.manages.ManagementExistsDto;
 import com.app.godo.dtos.manages.ManagesOverviewDto;
 import com.app.godo.dtos.user.UserManagerOptionDto;
 import com.app.godo.exceptions.general.BadRequestException;
@@ -123,12 +124,17 @@ public class ManagesService {
                 .map(ManagesOverviewDto::fromEntity).toList();
     }
 
+    public ManagementExistsDto doesManagementExist(String username, Long venueId, String token) {
+        if (!utils.extractSubject(token).equals(username)) {
+            throw new UnauthorizedException("you are not allowed to perform this operation");
+        }
+        return ManagementExistsDto.builder().exists(this.managesRepository.findManagement(username, venueId).isPresent()).build();
+    }
+
     private UserManagerOptionDto convertToManagerDto(User manager) {
         return new UserManagerOptionDto(
                 manager.getId(),
                 manager.getUsername()
         );
     }
-
-
 }

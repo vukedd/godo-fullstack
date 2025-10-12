@@ -1,0 +1,31 @@
+<div
+  class="border-2 border-gray-800 py-4 px-3 border-round-lg shadow-2 hover:border-gray-700 flex flex-column w-full h-3"
+>
+  <div>
+    <img [src]="event.imagePath" alt="Venue name" class="w-full h-20rem" />
+  </div>
+  <div>
+    <h3>{{ event.name }}</h3>
+  </div>
+  <span [style.color]="eventTypeColor(event)">
+    {{ this.eventTypeMap.get(event.type) }}
+  </span>
+  <span
+    class="text-lg text-color-white font-normal underline text-left my-3"
+    *ngIf="event?.price > 0"
+  >
+    ${{ event?.price }} per ticket
+  </span>
+  <span
+    class="text-lg text-color-white font-normal underline text-left my-3"
+    *ngIf="event?.price <= 0"
+  >
+    FREE ENTRANCE
+  </span>
+  <button
+    class="text-2xl w-full bg-primary border-none hover:bg-primary-200 border-round-lg"
+    [routerLink]="['/event', event.id]"
+  >
+    <i class="pi pi-info-circle"></i>
+  </button>
+</div>

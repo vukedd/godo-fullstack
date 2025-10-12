@@ -1,0 +1,35 @@
+<p-card
+  class="shadow-4 border-round-xl overflow-hidden"
+  styleClass="mx-2"
+  class="col-12"
+>
+  <div class="flex flex-column md:flex-row">
+    <div
+      class="w-full md:w-3 flex justify-content-center align-items-center bg-black-alpha-10"
+    >
+      <img
+        [src]="event?.imagePath"
+        alt="{{ event?.name }}"
+        class="w-full h-15rem md:h-12rem object-cover border-round-left-xl"
+      />
+    </div>
+
+    <div class="w-full md:w-9 p-4 flex flex-column justify-content-between">
+      <div>
+        <h2 class="m-0">{{ event?.name }}</h2>
+        <span class="mb-2" [style.color]="eventTypeColor(event)">{{
+          this.eventTypeMap.get(event?.eventType)
+        }}</span>
+        <p class="text-md font-semibold my-2">{{ event?.date }}</p>
+      </div>
+      <div>
+        <p-button
+          label="View Details"
+          icon="pi pi-info-circle"
+          styleClass="p-button-sm w-full md:w-auto"
+          [routerLink]="['/event', event?.id]"
+        ></p-button>
+      </div>
+    </div>
+  </div>
+</p-card>
