@@ -46,7 +46,7 @@ public class Venue {
     private Image image;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue", orphanRemoval = true)
-    private List<Review> review;
+    private List<Review> reviews;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue", orphanRemoval = true)
     private List<Manages> manages;

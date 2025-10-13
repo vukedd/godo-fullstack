@@ -34,6 +34,18 @@
       <i class="pi pi-calendar-plus text-xl"></i>
     </button>
   </div>
+
+  <div
+    *ngIf="!this.isManager && !this.isAdmin()"
+    class="flex justify-content-end w-full my-3"
+  >
+    <button
+      class="font-bold bg-blue-400 p-3 m-1 border-none border-round-md text-black-alpha-90 hover:bg-blue-300 flex align-items-center"
+      (click)="this.showReviewDialog()"
+    >
+      Add review <i class="ml-2 pi pi-comments text-xl"></i>
+    </button>
+  </div>
   <form class="grid" [formGroup]="editVenueForm">
     <div class="col-12 lg:col-5 flex align-items-center justify-content-center">
       <img
@@ -147,9 +159,18 @@
       ></div>
     </div>
 
-    <app-upcoming-event-card *ngFor="let event of this.upcomingEvents" [event]="event" class="col-12"></app-upcoming-event-card>
-    <div class="col-12 flex justify-content-center" *ngIf="this.upcomingEvents.length == 0">
-      <span class="text-white text-2xl text-center">There are currently no upcoming events</span>
+    <app-upcoming-event-card
+      *ngFor="let event of this.upcomingEvents"
+      [event]="event"
+      class="col-12"
+    ></app-upcoming-event-card>
+    <div
+      class="col-12 flex justify-content-center"
+      *ngIf="this.upcomingEvents.length == 0"
+    >
+      <span class="text-white text-2xl text-center"
+        >There are currently no upcoming events</span
+      >
     </div>
   </form>
 </div>
@@ -224,5 +245,57 @@
       (onClick)="submitManagerSelection()"
     >
     </p-button>
+  </ng-template>
+</p-dialog>
+
+<!-- Manage venue managers dialog -->
+<p-dialog
+  header="Rate venue event"
+  [modal]="true"
+  [(visible)]="this.isRateEventDialogVisible"
+  [style]="{ width: '30rem' }"
+  [draggable]="false"
+>
+  <!-- Main Content Area -->
+  <form class="field flex justify-content-center flex-column" [formGroup]="reviewForm" >
+    <label for="select-event">Select event:</label>
+    <p-select id="select-event" [options]="this.reviewEventOptions" optionLabel="name" formControlName="event"></p-select>
+    <div class="flex justify-content-center flex-column align-items-center">
+      <label for="performance-rating" class="mt-5">Performance:</label>
+      <p-rating id="performance-rating" formControlName="performance"/>
+
+      <label for="ambient-rating" class="mt-3">Ambient:</label>
+      <p-rating id="ambient-rating" formControlName="ambient"/>
+
+      <label for="venue-rating" class="mt-3">Venue:</label>
+      <p-rating id="venue-rating" formControlName="venue"/>
+
+      <label for="overall-rating" class="mt-3">Overall:</label>
+      <p-rating id="overall-rating" formControlName="overall"/>
+    </div>
+    <label for="comment" class="mt-5"
+      >Feel free to tell us what you think:</label
+    >
+    <textarea rows="10" id="comment" placeholder="(optional)" formControlName="comment"></textarea>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <!-- <p-button
+      label="Cancel"
+      severity="danger"
+      icon="pi pi-times"
+      styleClass="p-button"
+      (click)="isManagementDialogVisible = false"
+          </p-button>
+        -->
+    <div class="flex justify-content-center align-items-center">
+      <p-button
+        label="Submit"
+        icon="pi pi-check"
+        (onClick)="submitReview()"
+        [disabled]="isReviewSubmitButtonDisabled()"
+      >
+      </p-button>
+    </div>
   </ng-template>
 </p-dialog>

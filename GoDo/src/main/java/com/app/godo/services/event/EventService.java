@@ -2,6 +2,7 @@ package com.app.godo.services.event;
 
 import com.app.godo.dtos.event.CreateEventRequestDto;
 import com.app.godo.dtos.event.EventDetailsDto;
+import com.app.godo.dtos.event.EventReviewOptionDto;
 import com.app.godo.dtos.event.UpcomingEventDto;
 import com.app.godo.dtos.venue.CreateVenueRequestDto;
 import com.app.godo.enums.EventType;
@@ -30,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -43,6 +45,30 @@ public class EventService {
 
     private static final int WEEKS_TO_GENERATE_IN_ADVANCE = 1;
     private static final Logger logger = LogManager.getLogger(EventService.class);
+
+    public List<EventReviewOptionDto> findEventReviewOptions(long venueId) {
+        logger.info("Finding event review options for the venue with Id: {}", venueId);
+
+        Venue venue;
+
+        logger.info("Finding venue with Id: {}", venueId);
+        try {
+            venue = venueRepository.findById(venueId)
+                    .orElseThrow(() -> new NotFoundException("the venue you were looking for couldn't be found"));
+        } catch (NotFoundException ex) {
+            logger.warn("Venue with Id: {} couldn't be found", venueId);
+            throw new NotFoundException(ex.getMessage());
+        }
+
+        logger.info("Venue found with name: {}", venue.getName());
+
+        List<Event> events = eventRepository.findByRecurrentIsTrueAndDateBeforeAndVenue(LocalDate.now(), venue);
+
+        return events.stream()
+                .sorted(Comparator.comparing(Event::getDate))
+                .map(EventReviewOptionDto::fromEntity).toList();
+
+    }
 
     public Page<EventDetailsDto> filterEvents(String filter, double priceFrom, double priceTo, int eventType, LocalDate eventDate, Pageable eventPage) {
         Specification<Event> spec = EventSpecification.empty();
@@ -73,7 +99,6 @@ public class EventService {
     public List<EventDetailsDto> findEventsHappeningToday() {
         return eventRepository.findAllByDateEquals(LocalDate.now()).stream().map(EventDetailsDto::fromEntity).toList();
     }
-
 
     @Transactional
     public CreateEventRequestDto createEvent(long venueId, CreateEventRequestDto dto, MultipartFile image) {

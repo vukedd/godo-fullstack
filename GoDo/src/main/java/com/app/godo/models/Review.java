@@ -4,11 +4,12 @@ import com.app.godo.enums.ReviewStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 
+@Data
 @Entity
 @Builder
 @AllArgsConstructor
@@ -31,6 +32,10 @@ public class Review {
     private User reviewedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id", nullable = false, referencedColumnName = "id")
+    private Event event;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venue_id", nullable = false, referencedColumnName = "id")
     private Venue venue;
 
@@ -38,6 +43,6 @@ public class Review {
     @JoinColumn(name = "comment_id", referencedColumnName = "id", nullable = false)
     private Comment rootComment;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "review", cascade = CascadeType.ALL)
     private Rating rating;
 }

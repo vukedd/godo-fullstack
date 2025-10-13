@@ -2,6 +2,7 @@ package com.app.godo.controllers.event;
 
 import com.app.godo.dtos.event.CreateEventRequestDto;
 import com.app.godo.dtos.event.EventDetailsDto;
+import com.app.godo.dtos.event.EventReviewOptionDto;
 import com.app.godo.dtos.event.UpcomingEventDto;
 import com.app.godo.dtos.venue.VenueOverviewDto;
 import com.app.godo.services.event.EventService;
@@ -22,6 +23,11 @@ import java.util.List;
 @RequestMapping("/api/event")
 public class EventController {
     private final EventService eventService;
+
+    @GetMapping("/review-options/{id}")
+    public ResponseEntity<List<EventReviewOptionDto>> getEventReviewOptions(@PathVariable("id") long venueId) {
+        return ResponseEntity.ok(eventService.findEventReviewOptions(venueId));
+    }
 
     @GetMapping("/today")
     public ResponseEntity<List<EventDetailsDto>> findEventsHappeningToday() {

@@ -25,7 +25,10 @@ import { ManagesService } from '../../../services/manages/manages.service';
 import { forkJoin } from 'rxjs';
 import { EventService } from '../../../services/event/event.service';
 import { CardModule } from 'primeng/card';
-import { UpcomingEventCardComponent } from "../../event/upcoming-event-card/upcoming-event-card.component";
+import { UpcomingEventCardComponent } from '../../event/upcoming-event-card/upcoming-event-card.component';
+import { RatingModule } from 'primeng/rating';
+import { MessageModule } from 'primeng/message';
+import { ReviewService } from '../../../services/review/review.service';
 
 @Component({
   selector: 'app-venue-page',
@@ -43,8 +46,10 @@ import { UpcomingEventCardComponent } from "../../event/upcoming-event-card/upco
     MultiSelectModule,
     CardModule,
     RouterModule,
-    UpcomingEventCardComponent
-],
+    UpcomingEventCardComponent,
+    RatingModule,
+    MessageModule,
+  ],
   templateUrl: './venue-page.component.html',
   styleUrl: './venue-page.component.css',
 })
@@ -57,11 +62,13 @@ export class VenuePageComponent implements OnInit {
   isDeleteDialogVisible: boolean = false;
   isManagementDialogVisible: boolean = false;
   isManager: boolean = false;
-  
+
   selectedUsers: any;
   managerOptions: any;
 
   upcomingEvents: any[] = [];
+
+  reviewEventOptions: any[] = [{ id: -1, name: 'Select event' }];
 
   VenueTypeMap = new Map<string, string>([
     ['CULTURAL_CENTER', 'Cultural Center'],
@@ -98,6 +105,8 @@ export class VenuePageComponent implements OnInit {
 
   editVenueForm: FormGroup<any> = new FormGroup({});
 
+  isRateEventDialogVisible: boolean = false;
+
   constructor(
     private venueService: VenueService,
     private route: ActivatedRoute,
@@ -106,7 +115,8 @@ export class VenuePageComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private managesService: ManagesService,
-    private eventService: EventService
+    private eventService: EventService,
+    private reviewService: ReviewService
   ) {}
 
   ngOnInit(): void {
@@ -195,6 +205,64 @@ export class VenuePageComponent implements OnInit {
 
   isAdmin(): boolean {
     return this.authService.isAdmin();
+  }
+
+  // review
+
+  reviewForm: FormGroup<any> = new FormGroup({
+    event: new FormControl(this.reviewEventOptions[0], Validators.required),
+    performance: new FormControl<number | null>(null, Validators.required),
+    ambient: new FormControl<number | null>(null, Validators.required),
+    venue: new FormControl<number | null>(null, Validators.required),
+    overall: new FormControl<number | null>(null, Validators.required),
+    comment: new FormControl(),
+  });
+
+  showReviewDialog() {
+    this.eventService.getEventReviewOptions(this.venue?.id ?? 0).subscribe({
+      next: (next) => {
+        next.forEach((element: any) => {
+          this.reviewEventOptions.push(element);
+        });
+
+        this.isRateEventDialogVisible = true;
+      },
+      error: (error) => {},
+    });
+  }
+
+  hideReviewDialog() {
+    this.isRateEventDialogVisible = false;
+    this.reviewForm.reset();
+  }
+
+  submitReview() {
+    if (this.isReviewSubmitButtonDisabled()) {
+      this.showError('Please check all fields before re-submitting!');
+      return;
+    }
+
+    this.reviewService.createReview({
+      reviewer: this.authService.getUsername() ?? '',
+      venueId: this.venue?.id ?? 0,
+      eventId: this.reviewForm.value.event.id ?? 0,
+      comment: this.reviewForm.value.comment ?? '',
+      performanceGrade: this.reviewForm.value.performance ?? 0,
+      venueGrade: this.reviewForm.value.venue ?? 0,
+      ambientGrade: this.reviewForm.value.ambient ?? 0,
+      overallImpression: this.reviewForm.value.overall ?? 0,
+    }).subscribe({
+      next: (response) => {
+        this.showSuccess("Venue successfully reviewed!");
+        this.hideReviewDialog();
+      }, error: (error) => {
+        this.showError("An error has occurred while reviewing event");
+      }
+    })
+  }
+
+  isReviewSubmitButtonDisabled() {
+    return !this.reviewForm.valid;
   }
 
   // edit venue
