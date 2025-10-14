@@ -14,6 +14,7 @@ import { AddEventComponent } from './layout/event/add-event/add-event.component'
 import { ManagementGuard } from './guards/management-guard';
 import { EventPageComponent } from './layout/event/event-page/event-page.component';
 import { ExploreEventPageComponent } from './layout/event/explore-event-page/explore-event-page.component';
+import { ReviewPageComponent } from './layout/review/review-page/review-page.component';
 
 export const routes: Routes = [
     {
@@ -86,6 +87,12 @@ export const routes: Routes = [
         title: 'Explore events',
         path: 'event',
         component: ExploreEventPageComponent,
+        canActivate: [AuthGuard, ProfileStatusGuard]
+    },
+    {
+        title: 'Reviews',
+        path: 'review/venue/:id',
+        component: ReviewPageComponent,
         canActivate: [AuthGuard, ProfileStatusGuard]
     }
 ];

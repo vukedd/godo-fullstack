@@ -26,9 +26,11 @@ import { forkJoin } from 'rxjs';
 import { EventService } from '../../../services/event/event.service';
 import { CardModule } from 'primeng/card';
 import { UpcomingEventCardComponent } from '../../event/upcoming-event-card/upcoming-event-card.component';
-import { RatingModule } from 'primeng/rating';
+import { RatingModule, RatingRateEvent } from 'primeng/rating';
 import { MessageModule } from 'primeng/message';
 import { ReviewService } from '../../../services/review/review.service';
+import { ReviewCardComponent } from '../../review/review-card/review-card.component';
+import { RatingOverviewDto } from '../../../models/review/RatingOverviewDto';
 
 @Component({
   selector: 'app-venue-page',
@@ -49,12 +51,13 @@ import { ReviewService } from '../../../services/review/review.service';
     UpcomingEventCardComponent,
     RatingModule,
     MessageModule,
+    ReviewCardComponent,
   ],
   templateUrl: './venue-page.component.html',
   styleUrl: './venue-page.component.css',
 })
 export class VenuePageComponent implements OnInit {
-  venue: VenueOverviewDto | undefined;
+  public venue: VenueOverviewDto | undefined;
   venueType: string = '';
   isEdit: boolean = false;
   initialVenueTypeIndex: number = 0;
@@ -69,6 +72,9 @@ export class VenuePageComponent implements OnInit {
   upcomingEvents: any[] = [];
 
   reviewEventOptions: any[] = [{ id: -1, name: 'Select event' }];
+
+  reviewList: any[] = [];
+  ratingOverview: RatingOverviewDto = {averageRating: 0, reviewCount: 0}
 
   VenueTypeMap = new Map<string, string>([
     ['CULTURAL_CENTER', 'Cultural Center'],
@@ -104,7 +110,6 @@ export class VenuePageComponent implements OnInit {
   ]);
 
   editVenueForm: FormGroup<any> = new FormGroup({});
-
   isRateEventDialogVisible: boolean = false;
 
   constructor(
@@ -174,6 +179,27 @@ export class VenuePageComponent implements OnInit {
       },
       error: (error) => {},
     });
+
+    this.reviewService.getReviewsByVenueId(venueId).subscribe({
+      next: (response) => {
+        this.reviewList = response;
+      },
+      error: (error) => {
+        console.log(error);
+        this.showError('An error has occurred while fetching feedback');
+      },
+    });
+
+    this.reviewService.getRatingOverview(venueId).subscribe({
+      next: (response) => {
+        this.ratingOverview = response;
+      },
+      error: (error) => {
+        this.showError(
+          'An error has occurred while fetching venue rating overview!'
+        );
+      },
+    });
   }
 
   venueTypeColor(): string {
@@ -242,23 +268,26 @@ export class VenuePageComponent implements OnInit {
       return;
     }
 
-    this.reviewService.createReview({
-      reviewer: this.authService.getUsername() ?? '',
-      venueId: this.venue?.id ?? 0,
-      eventId: this.reviewForm.value.event.id ?? 0,
-      comment: this.reviewForm.value.comment ?? '',
-      performanceGrade: this.reviewForm.value.performance ?? 0,
-      venueGrade: this.reviewForm.value.venue ?? 0,
-      ambientGrade: this.reviewForm.value.ambient ?? 0,
-      overallImpression: this.reviewForm.value.overall ?? 0,
-    }).subscribe({
-      next: (response) => {
-        this.showSuccess("Venue successfully reviewed!");
-        this.hideReviewDialog();
-      }, error: (error) => {
-        this.showError("An error has occurred while reviewing event");
-      }
-    })
+    this.reviewService
+      .createReview({
+        reviewer: this.authService.getUsername() ?? '',
+        venueId: this.venue?.id ?? 0,
+        eventId: this.reviewForm.value.event.id ?? 0,
+        comment: this.reviewForm.value.comment ?? '',
+        performanceGrade: this.reviewForm.value.performance ?? 0,
+        venueGrade: this.reviewForm.value.venue ?? 0,
+        ambientGrade: this.reviewForm.value.ambient ?? 0,
+        overallImpression: this.reviewForm.value.overall ?? 0,
+      })
+      .subscribe({
+        next: (response) => {
+          this.showSuccess('Venue successfully reviewed!');
+          this.hideReviewDialog();
+        },
+        error: (error) => {
+          this.showError('An error has occurred while reviewing event');
+        },
+      });
   }
 
   isReviewSubmitButtonDisabled() {

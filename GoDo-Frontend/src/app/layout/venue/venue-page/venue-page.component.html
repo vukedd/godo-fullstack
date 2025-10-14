@@ -150,6 +150,58 @@
         >
       </div>
     </div>
+    <div class="col-12 mt-7">
+      <div class="surface-card p-4 lg:p-5 border-round-lg shadow-2">
+        <div class="text-center mb-5">
+          <h2 class="text-4xl font-light m-0">Reviews</h2>
+        </div>
+
+        <div class="flex flex-column align-items-center">
+          <div class="flex align-items-center gap-3 mb-5" *ngIf="this.ratingOverview.reviewCount != 0">
+            <i
+              class="pi pi-star-fill text-yellow-500"
+              style="font-size: 2.5rem"
+            ></i>
+            <div>
+              <div class="text-4xl font-bold" *ngIf="this.ratingOverview?.averageRating">
+                {{ ratingOverview.averageRating | number : "1.1-1" }}
+              </div>
+              <div class="text-lg text-color-secondary">
+                ({{ ratingOverview.reviewCount }} reviews)
+              </div>
+            </div>
+          </div>
+
+          <div
+            *ngFor="let review of reviewList.slice(0, 1)"
+            class="w-full md:w-10 lg:w-8 mb-4"
+          >
+            <app-review-card [review]="review" [isManager]="this.isManager" [isReviewPage]="false"></app-review-card>
+          </div>
+
+          <div
+            *ngIf="!reviewList || reviewList.length === 0"
+            class="text-center p-3"
+          >
+            <i class="pi pi-comments text-4xl text-color-secondary mb-2"></i>
+            <p class="text-xl text-color-secondary">
+              There are currently no reviews for this venue.
+            </p>
+          </div>
+
+          <div class="mt-4" *ngIf="reviewList.length > 1">
+            <p-button
+              label="See All Reviews"
+              icon="pi pi-arrow-right"
+              iconPos="right"
+              styleClass="p-button-text"
+              [routerLink]="['/review/venue/', this.venue?.id]"
+            >
+            </p-button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div
       class="col-12 mt-7 flex justify-content-center align-items-center flex-column"
     >
@@ -257,26 +309,39 @@
   [draggable]="false"
 >
   <!-- Main Content Area -->
-  <form class="field flex justify-content-center flex-column" [formGroup]="reviewForm" >
+  <form
+    class="field flex justify-content-center flex-column"
+    [formGroup]="reviewForm"
+  >
     <label for="select-event">Select event:</label>
-    <p-select id="select-event" [options]="this.reviewEventOptions" optionLabel="name" formControlName="event"></p-select>
+    <p-select
+      id="select-event"
+      [options]="this.reviewEventOptions"
+      optionLabel="name"
+      formControlName="event"
+    ></p-select>
     <div class="flex justify-content-center flex-column align-items-center">
       <label for="performance-rating" class="mt-5">Performance:</label>
-      <p-rating id="performance-rating" formControlName="performance"/>
+      <p-rating id="performance-rating" formControlName="performance" />
 
       <label for="ambient-rating" class="mt-3">Ambient:</label>
-      <p-rating id="ambient-rating" formControlName="ambient"/>
+      <p-rating id="ambient-rating" formControlName="ambient" />
 
       <label for="venue-rating" class="mt-3">Venue:</label>
-      <p-rating id="venue-rating" formControlName="venue"/>
+      <p-rating id="venue-rating" formControlName="venue" />
 
       <label for="overall-rating" class="mt-3">Overall:</label>
-      <p-rating id="overall-rating" formControlName="overall"/>
+      <p-rating id="overall-rating" formControlName="overall" />
     </div>
     <label for="comment" class="mt-5"
       >Feel free to tell us what you think:</label
     >
-    <textarea rows="10" id="comment" placeholder="(optional)" formControlName="comment"></textarea>
+    <textarea
+      rows="10"
+      id="comment"
+      placeholder="(optional)"
+      formControlName="comment"
+    ></textarea>
   </form>
 
   <ng-template pTemplate="footer">

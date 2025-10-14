@@ -1,0 +1,146 @@
+<p-card *ngIf="review" styleClass="w-full">
+  <ng-template pTemplate="header">
+    <div
+      class="flex align-items-center justify-content-between p-2 border-bottom-1 surface-border"
+    >
+      <div class="flex align-items-center">
+        <p-avatar
+          [image]="review.reviewerPfpPath"
+          styleClass="mr-2"
+          size="normal"
+          shape="circle"
+        >
+        </p-avatar>
+        <div>
+          <div class="font-bold">{{ review.reviewer }}</div>
+          <div class="text-sm text-color-secondary">
+            {{ review.eventName }} #{{ review.eventCount }}
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-1" *ngIf="this.isManager && this.isReviewPage">
+        <p-button
+          icon="pi pi-eye-slash"
+          styleClass="p-button-text p-button-secondary p-button-rounded"
+          pTooltip="Hide Review"
+          (onClick)="hideReview(review.reviewId)"
+        ></p-button>
+        <p-button
+          icon="pi pi-trash"
+          styleClass="p-button-text p-button-danger p-button-rounded"
+          pTooltip="Delete Review"
+          (onClick)="deleteReview(review.reviewId)"
+        ></p-button>
+      </div>
+    </div>
+  </ng-template>
+
+  <p class="p-2 my-2 font-italic text-color-secondary">
+    "{{ review.comment }}"
+  </p>
+
+  <p-divider></p-divider>
+
+  <div class="flex flex-column gap-2 p-2">
+    <h4 class="m-0 mb-2 font-medium text-primary">Detailed Ratings</h4>
+
+    <div class="flex justify-content-between align-items-center">
+      <span class="font-medium">Performance</span>
+      <p-rating
+        [(ngModel)]="review.performanceGrade"
+        [readonly]="true"
+      ></p-rating>
+    </div>
+
+    <div class="flex justify-content-between align-items-center">
+      <span class="font-medium">Venue</span>
+      <p-rating [(ngModel)]="review.venueGrade" [readonly]="true"></p-rating>
+    </div>
+
+    <div class="flex justify-content-between align-items-center">
+      <span class="font-medium">Ambience</span>
+      <p-rating [(ngModel)]="review.ambientGrade" [readonly]="true"></p-rating>
+    </div>
+
+    <div
+      class="flex justify-content-between align-items-center pt-2 mt-2 border-top-1 surface-border overall-rating"
+    >
+      <span class="font-bold">Overall</span>
+      <p-rating
+        [(ngModel)]="review.overallImpression"
+        [readonly]="true"
+        [stars]="5"
+      ></p-rating>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end p-3" *ngIf="isReviewPage">
+      <p-button
+        label="Write a Reply"
+        icon="pi pi-reply"
+        styleClass="p-button-raised p-button-primary"
+        pTooltip="Reply to this review"
+        *ngIf="
+          this.isManager &&
+          this.isReviewPage &&
+          this.review.reviewVenueReply?.content == null
+        "
+        (onClick)="showReplyDialog()"
+      >
+      </p-button>
+      <div
+        class="w-full text-left p-3 border-round surface-100"
+        *ngIf="
+          this.isReviewPage &&
+          this.review.reviewVenueReply?.content != null
+        "
+      >
+        <h4 class="mt-0 mb-2">Venue replied</h4>
+        <p class="m-0 font-italic">"{{ review.reviewVenueReply?.content }}"</p>
+        <small
+          *ngIf="review.reviewVenueReply?.createdAt"
+          class="block mt-2 text-color-secondary"
+        >
+          Replied on:
+          {{ review.reviewVenueReply?.createdAt | date : "short" }}
+        </small>
+      </div>
+    </div>
+  </ng-template></p-card
+>
+
+<p-dialog
+  header="Rate venue event"
+  [modal]="true"
+  [(visible)]="this.isReplyDialogShown"
+  [style]="{ width: '30rem' }"
+  [draggable]="false"
+>
+  <form
+    class="field flex justify-content-center flex-column"
+    [formGroup]="this.replyForm"
+  >
+    <label for="comment" class="mt-5"
+      >Enter comment:</label
+    >
+    <textarea
+      rows="10"
+      id="comment"
+      placeholder="(optional)"
+      formControlName="content"
+    ></textarea>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center align-items-center">
+      <p-button
+        label="Submit"
+        icon="pi pi-check"
+        [disabled]="isSubmitBtnDisabled()"
+        (onClick)="submitReply()"
+      >
+      </p-button>
+    </div>
+  </ng-template>
+</p-dialog>
