@@ -60,4 +60,9 @@ public class ReviewController {
         reviewService.deleteReview(reviewId, utils.extractToken(authHeader));
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<ReviewOverviewDto>> getReviewByUsername(@RequestHeader("Authorization") String authHeader) {
+        return ResponseEntity.ok(reviewService.findReviewsByUser(utils.extractToken(authHeader)));
+    }
 }

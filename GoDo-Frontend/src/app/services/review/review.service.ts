@@ -34,4 +34,7 @@ export class ReviewService {
     return this.http.patch(`${environment.apiUrl}/review/delete/${reviewId}`, {});
   }
 
+  public getProfileReviewList() :Observable<any> {
+    return this.http.get(`${environment.apiUrl}/review/user`);
+  }
 }

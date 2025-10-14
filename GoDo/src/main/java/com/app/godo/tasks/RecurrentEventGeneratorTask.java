@@ -61,7 +61,6 @@ public class RecurrentEventGeneratorTask {
         logger.info("Finished recurrent event generation job.");
     }
 
-
     private void generateNextBatch(Event templateEvent) {
         List<Event> newInstances = new ArrayList<>();
         LocalDate nextDate = templateEvent.getDate().plusWeeks(1);

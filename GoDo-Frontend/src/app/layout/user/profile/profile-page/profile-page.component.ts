@@ -9,6 +9,13 @@ import { UserService } from '../../../../services/user/user.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { MessageService } from 'primeng/api';
 import { Router, RouterModule } from '@angular/router';
+import { ManagesService } from '../../../../services/manages/manages.service';
+import { VenueService } from '../../../../services/venue/venue.service';
+import { forkJoin, map, of, switchMap } from 'rxjs';
+import { ManagesOverviewDto } from '../../../../models/manages/ManagesOverviewDto';
+import { CommonModule } from '@angular/common';
+import { ReviewService } from '../../../../services/review/review.service';
+import { ReviewCardComponent } from "../../../review/review-card/review-card.component";
 
 @Component({
   selector: 'app-profile-page',
@@ -18,8 +25,10 @@ import { Router, RouterModule } from '@angular/router';
     DividerModule,
     ChangePasswordComponent,
     ButtonModule,
-    RouterModule
-  ],
+    RouterModule,
+    CommonModule,
+    ReviewCardComponent
+],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.css',
 })
@@ -34,10 +43,16 @@ export class ProfilePageComponent implements OnInit {
     dateOfBirth: '',
   };
 
+  managementOverviewList: any;
+  reviewList: any[] = [];
+
   constructor(
     public userService: UserService,
     public authService: AuthService,
     public messageService: MessageService,
+    public managesService: ManagesService,
+    public venueService: VenueService,
+    public reviewService: ReviewService,
     public router: Router
   ) {}
 
@@ -76,5 +91,43 @@ export class ProfilePageComponent implements OnInit {
           });
         },
       });
+
+      
+    this.managesService
+      .getManagementByUsername(username)
+      .pipe(
+        switchMap((dtos: any) => {
+          const observables = dtos.map((dto: any) =>
+            forkJoin({
+              venue: this.venueService.findVenueById(dto.venueId),
+              manager: of(dto.managerUsername),
+              management: of(dto),
+            }).pipe(
+              map(
+                ({ venue, manager, management }) =>
+                  ({
+                    id: management.id,
+                    venue: venue,
+                    manager: manager,
+                  } as ManagesOverviewDto)
+              )
+            )
+          );
+
+          return forkJoin(observables);
+        })
+      )
+      .subscribe((managementOverviewList: any) => {
+        this.managementOverviewList = managementOverviewList;
+      });
+
+    this.reviewService.getProfileReviewList().subscribe({
+      next: (response) => {
+        this.reviewList = response;
+      },
+      error: (error) => {
+
+      }
+    })
   }
 }

@@ -212,7 +212,7 @@ public class ReviewService {
 
     public void hideReview(long reviewId, String token) {
         String subject = utils.extractSubject(token);
-        logger.info("Manager '{}' attempting to reply to review with ID: {}", subject, reviewId);
+        logger.info("Manager '{}' attempting to hide review with ID: {}", subject, reviewId);
 
         Review review;
         try {
@@ -244,7 +244,7 @@ public class ReviewService {
 
     public void deleteReview(long reviewId, String token) {
         String subject = utils.extractSubject(token);
-        logger.info("Manager '{}' attempting to reply to review with ID: {}", subject, reviewId);
+        logger.info("Manager '{}' attempting to delete review with ID: {}", subject, reviewId);
 
         Review review;
         try {
@@ -272,5 +272,34 @@ public class ReviewService {
         reviewRepository.save(review);
 
         logger.info("Manager '{}' successfully deleted a review with the ID: {}", subject, reviewId);
+    }
+
+    public List<ReviewOverviewDto> findReviewsByUser(String token) {
+        String subject = utils.extractSubject(token);
+
+        User user;
+
+        try {
+            logger.info("Finding user with the username: {}", subject);
+            user = userRepository.findByUsername((subject))
+                    .orElseThrow(() -> new NotFoundException("the user you were looking for couldn't be found"));
+
+            logger.info("User has been found");
+
+        } catch (NotFoundException ex) {
+            logger.warn(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        }
+        logger.info("Fetching all non-deleted reivews from the user: {}", subject);
+
+        List<Review> reviews = reviewRepository.findByReviewedByIsAndStatusNot(user, ReviewStatus.DELETED);
+        logger.info("Fetched {} reviews made by {}", reviews.size(), subject);
+
+        return reviews.stream()
+                .map(review -> ReviewOverviewDto
+                        .fromEntity(review, eventRepository
+                                .findEventNumber(review.getEvent().getId(), review.getEvent().getName())
+                        )
+                ).toList();
     }
 }

@@ -54,4 +54,8 @@ export class VenueService {
   public deleteVenue(venueId: string) : Observable<any> {
     return this.http.delete(`${environment.apiUrl}/venue/${venueId}`);
   }
+
+  public getTopVenues(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/venue/top`);
+  }
 }

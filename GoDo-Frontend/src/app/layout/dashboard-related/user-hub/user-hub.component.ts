@@ -7,15 +7,18 @@ import { CommonModule } from '@angular/common';
 import { EventCardComponent } from "../../event/event-card/event-card.component";
 import { EventOverviewDto } from '../../../models/event/EventOverviewDto';
 import { EventService } from '../../../services/event/event.service';
+import { VenueOverviewDto } from '../../../models/venue/VenueOverviewDto';
+import { VenueCardComponent } from '../../venue/venue-card/venue-card.component';
 
 @Component({
   selector: 'app-user-hub',
-  imports: [CommonModule, EventCardComponent],
+  imports: [CommonModule, EventCardComponent, VenueCardComponent],
   templateUrl: './user-hub.component.html',
   styleUrl: './user-hub.component.css',
 })
 export class UserHubComponent implements OnInit {
   public events: EventOverviewDto[] = [];
+  public venues: VenueOverviewDto[] = [];
 
   constructor(
     public managesService: ManagesService,
@@ -66,5 +69,10 @@ export class UserHubComponent implements OnInit {
       }
     })
 
+    this.venueService.getTopVenues().subscribe({
+      next: (response) => {
+        this.venues = response;
+      }
+    })
   }
 }
