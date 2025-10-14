@@ -9,12 +9,16 @@ import com.app.godo.exceptions.general.NotFoundException;
 import com.app.godo.exceptions.general.ParseException;
 import com.app.godo.models.Image;
 import com.app.godo.models.Venue;
+import com.app.godo.repositories.event.EventRepository;
 import com.app.godo.repositories.venue.VenueRepository;
+import com.app.godo.services.event.EventService;
 import com.app.godo.services.files.FileStorageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,13 +26,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class VenueService {
     private final VenueRepository venueRepository;
+    private final EventRepository eventRepository;
     private final FileStorageService fileStorageService;
     private final ObjectMapper objectMapper;
+
+    private static final Logger logger = LogManager.getLogger(VenueService.class);
 
     public Page<VenueOverviewDto> filterVenues(String filter, int venueType, Pageable pageable) {
         Page<Venue> venues;
@@ -96,6 +104,11 @@ public class VenueService {
         Venue venue = venueRepository.findVenueById(venueId)
                 .orElseThrow(() -> new NotFoundException("The venue you were looking for can't be found"));
 
+
+        if (!eventRepository.findByVenue(venue).isEmpty()) {
+            throw new ConflictException("Venue can't be delete if events exist");
+        }
+
         venueRepository.delete(venue);
     }
 
@@ -108,5 +121,14 @@ public class VenueService {
         }
 
         return venue;
+    }
+
+    public List<VenueOverviewDto> findTopVenues() {
+        logger.info("Finding top venues");
+        return venueRepository.findAllOrderByCalculatedRatingDesc()
+                .stream()
+                .limit(3)
+                .map(VenueOverviewDto::fromEntity)
+                .toList();
     }
 }

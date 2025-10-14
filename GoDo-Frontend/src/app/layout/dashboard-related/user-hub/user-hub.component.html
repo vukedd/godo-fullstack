@@ -1,4 +1,4 @@
-<div class="mt-8 flex flex-column justify-content-   p-4 mx-4">
+<div class="mt-8 flex flex-column justify-content- p-4 mx-4">
   <!-- <div *ngFor="let overview of this.managementOverviewList">
         <p>{{ overview.id }}</p>
         <p>{{ overview.manager }}</p>
@@ -11,6 +11,16 @@
     </div>
   </div>
   <h3 class="text-center mt-5" *ngIf="this.events.length == 0">
+    Looks like it's a "stay home in your pajamas" type of night...
+  </h3>
+
+  <h1 class="text-center text-primary">Top venues</h1>
+  <div class="grid w-full mt-5" *ngIf="this.venues.length > 0">
+    <div class="md:col-4 p-2 col-12" *ngFor="let venue of venues">
+      <app-venue-card [venue]="venue"></app-venue-card>
+    </div>
+  </div>
+  <h3 class="text-center mt-5" *ngIf="this.venues.length == 0">
     Looks like it's a "stay home in your pajamas" type of night...
   </h3>
 </div>

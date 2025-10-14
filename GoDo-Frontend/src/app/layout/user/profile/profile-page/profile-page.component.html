@@ -1,11 +1,11 @@
 <div class="px-4 lg:px-8 mt-8 py-4">
   <div styleClass="p-4">
     <div class="flex flex-column align-items-center text-center">
-    <img
-      [src]="userProfile.imagePath"
-      class="border-circle"
-      style="width: 150px; height: 150px"
-    />
+      <img
+        [src]="userProfile.imagePath"
+        class="border-circle"
+        style="width: 150px; height: 150px"
+      />
       <h2 class="mt-0 mb-1">{{ userProfile.username }}</h2>
     </div>
 
@@ -20,21 +20,27 @@
               <div class="flex align-items-start mb-4">
                 <div class="border-bottom-1 border-gray-500">
                   <span class="text-color-secondary">Address</span>
-                  <p class="font-bold text-lg mt-1 mb-0">{{userProfile.address}}</p>
+                  <p class="font-bold text-lg mt-1 mb-0">
+                    {{ userProfile.address }}
+                  </p>
                 </div>
               </div>
 
               <div class="flex align-items-start mb-4">
                 <div class="border-bottom-1 border-gray-500">
                   <span class="text-color-secondary">City</span>
-                  <p class="font-bold text-lg mt-1 mb-0">{{userProfile.city}}</p>
+                  <p class="font-bold text-lg mt-1 mb-0">
+                    {{ userProfile.city }}
+                  </p>
                 </div>
               </div>
 
               <div class="flex align-items-start lg:mb-4">
                 <div class="border-bottom-1 border-gray-500">
                   <span class="text-color-secondary">Date of Birth</span>
-                  <p class="font-bold text-lg mt-1 mb-0">{{userProfile.dateOfBirth}}</p>
+                  <p class="font-bold text-lg mt-1 mb-0">
+                    {{ userProfile.dateOfBirth }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -42,21 +48,27 @@
               <div class="flex align-items-start mb-4">
                 <div class="border-bottom-1 border-gray-500">
                   <span class="text-color-secondary">E-mail</span>
-                  <p class="font-bold text-lg mt-1 mb-0">{{userProfile.email}}</p>
+                  <p class="font-bold text-lg mt-1 mb-0">
+                    {{ userProfile.email }}
+                  </p>
                 </div>
               </div>
               <div class="flex align-items-start mb-4">
                 <div class="border-bottom-1 border-gray-500">
                   <span class="text-color-secondary">Phone</span>
-                  <p class="font-bold text-lg mt-1 mb-0">{{userProfile.phoneNumber}}</p>
+                  <p class="font-bold text-lg mt-1 mb-0">
+                    {{ userProfile.phoneNumber }}
+                  </p>
                 </div>
               </div>
-
             </div>
           </div>
 
           <div class="w-full flex justify-content-start">
-            <p-button label="Edit personal information" [routerLink]="'/edit-profile'"></p-button>
+            <p-button
+              label="Edit personal information"
+              [routerLink]="'/edit-profile'"
+            ></p-button>
           </div>
         </div>
       </div>
@@ -69,5 +81,79 @@
 
     <p-divider styleClass="my-4"></p-divider>
 
+    <div
+      class="p-4"
+      *ngIf="managementOverviewList && managementOverviewList.length > 0"
+    >
+      <h2 class="text-2xl font-semibold mb-4 text-center">
+        Your Managed Venues
+      </h2>
+      <div
+        *ngIf="managementOverviewList && managementOverviewList.length > 0"
+        class="grid"
+      >
+        <div
+          *ngFor="let overview of managementOverviewList"
+          class="col-12 md:col-6 lg:col-4 p-2"
+        >
+          <p-card styleClass="h-full flex flex-column">
+            <ng-template pTemplate="header">
+              <img
+                [src]="
+                  overview.venue.imagePath ||
+                  'assets/images/venue-placeholder.png'
+                "
+                alt="{{ overview.venue.name }} image"
+                class="w-full h-12rem object-cover"
+              />
+            </ng-template>
+
+            <ng-template pTemplate="title">
+              {{ overview.venue.name }}
+            </ng-template>
+
+            <ng-template pTemplate="subtitle">
+              <div
+                *ngIf="overview.venue.address"
+                class="flex align-items-center text-gray-600"
+              >
+                <i class="pi pi-map-marker mr-2"></i>
+                <span>{{ overview.venue.address }}</span>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+              <div class="mt-auto">
+                <p-button
+                  label="Visit venue page"
+                  styleClass="p-button-raised w-full"
+                  [routerLink]="['/venue', overview.venue.id]"
+                >
+                </p-button>
+              </div>
+            </ng-template>
+          </p-card>
+        </div>
+      </div>
+    </div>
+
+    <p-divider
+      styleClass="my-4"
+      *ngIf="reviewList && reviewList.length > 0 && managementOverviewList && managementOverviewList.length > 0"
+    ></p-divider>
+
+    <div *ngIf="reviewList && reviewList.length > 0">
+      <h2 class="text-2xl font-semibold mb-4 text-center">Your reviews</h2>
+      <div>
+        <app-review-card
+          *ngFor="let review of reviewList"
+          [isReviewPage]="false"
+          [isManager]="false"
+          [review]="review"
+          class="m-3"
+        >
+        </app-review-card>
+      </div>
+    </div>
   </div>
 </div>

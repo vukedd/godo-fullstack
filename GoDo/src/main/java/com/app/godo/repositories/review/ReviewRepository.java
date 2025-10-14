@@ -2,6 +2,7 @@ package com.app.godo.repositories.review;
 
 import com.app.godo.enums.ReviewStatus;
 import com.app.godo.models.Review;
+import com.app.godo.models.User;
 import com.app.godo.models.Venue;
 
 import org.springframework.data.domain.Page;
@@ -19,4 +20,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findByVenueAndStatus(Venue venue, ReviewStatus status, Pageable pageable);
 
     List<Review> findReviewByVenue(Venue venue);
+
+    List<Review> findByReviewedBy(User user);
+
+    List<Review> findByReviewedByIsAndStatusIs(User reviewedBy, ReviewStatus status);
+
+    List<Review> findByReviewedByIsAndStatusNot(User reviewedBy, ReviewStatus status);
 }
