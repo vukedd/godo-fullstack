@@ -29,4 +29,9 @@ public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecific
     Page<Event> findAll(Specification<Event> spec, Pageable eventPage);
 
     List<Event> findAllByDateEquals(LocalDate now);
+
+    List<Event> findByRecurrentIsTrueAndDateBeforeAndVenue(LocalDate date, Venue venue);
+
+    @Query("SELECT COUNT(*) FROM Event e0 WHERE e0.name LIKE :eventName AND e0.recurrent IS TRUE AND e0.date < (SELECT e1.date FROM Event e1 WHERE e1.id = :eventId AND e1.recurrent IS TRUE)")
+    int findEventNumber(@Param("eventId") long eventId, @Param("eventName") String eventName);
 }

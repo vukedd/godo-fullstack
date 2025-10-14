@@ -22,7 +22,7 @@ export class ManagesService {
     return this.http.put(`${environment.apiUrl}/manages/venue/update/${venueId}`, selectedUsers);
   }
 
-  public doesManagementExist(venueId: string, username: string) : Observable<any>{
+  public doesManagementExist(venueId: string, username: string | undefined) : Observable<any>{
     return this.http.get(`${environment.apiUrl}/manages/venue/exists/${venueId}/${username}`);
   }
 }

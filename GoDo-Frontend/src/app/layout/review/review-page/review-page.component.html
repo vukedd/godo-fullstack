@@ -1,0 +1,24 @@
+<div
+  class="flex justify-content-center flex-column align-items-center mt-8 w-full"
+>
+  <div class="grid w-full mt-5 lg:px-5" *ngIf="this.reviews.length > 0">
+    <div class="p-2 col-12 lg:px-5" *ngFor="let review of reviews">
+      <app-review-card
+        [review]="review"
+        [isManager]="isManager"
+        [isReviewPage]="true"
+      ></app-review-card>
+    </div>
+  </div>
+  <p-paginator
+    [first]="this.first"
+    [rows]="this.rows"
+    [totalRecords]="this.totalElements"
+    (onPageChange)="onPageChange($event)"
+    *ngIf="this.reviews.length > 0"
+  />
+  <h2 class="text-center mt-5" *ngIf="this.reviews.length == 0">
+    No reviews have been found...
+  </h2>
+  <!-- (onPageChange)="onPageChange($event)" -->
+</div>

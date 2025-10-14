@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -42,6 +43,9 @@ public class Event {
 
     @Column(nullable = false)
     private boolean recurrent;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event", orphanRemoval = true)
+    private List<Review> reviews;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venue_id", nullable = false, referencedColumnName = "id")
