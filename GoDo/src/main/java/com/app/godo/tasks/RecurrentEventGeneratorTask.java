@@ -29,7 +29,7 @@ public class RecurrentEventGeneratorTask {
 
     private static final Logger logger = LogManager.getLogger(RecurrentEventGeneratorTask.class);
 
-    @Scheduled(cron = "0 48 14 * * ?")
+    @Scheduled(cron = "0 42 11 * * ?")
     @Transactional
     public void generateFutureRecurrentEvents() {
         logger.info("Starting recurrent event generation task...");

@@ -195,8 +195,13 @@ public class ReviewService {
 
         logger.info("Venue with the id: {} has been found", venueId);
 
+        int excludeReviewCount = 0;
         double ratingSum = 0;
         for (var review : reviews) {
+            if (review.getStatus() == ReviewStatus.DELETED) {
+                excludeReviewCount++;
+                continue;
+            }
             logger.info("Calculating rating for review with Id: {}", review.getId());
 
             ratingSum += review.getRating().getVenue()
@@ -207,7 +212,7 @@ public class ReviewService {
 
         logger.info("Average rating for the venue with Id: {} has been calculated", venueId);
 
-        return new RatingOverviewDto(reviews.size(), ratingSum / (4.0 * reviews.size()));
+        return new RatingOverviewDto(reviews.size() - excludeReviewCount, ratingSum / (4.0 * reviews.size()));
     }
 
     public void hideReview(long reviewId, String token) {

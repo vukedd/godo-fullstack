@@ -22,6 +22,7 @@
             ></i>
           </h1>
           <span class="text-color-secondary"> {{ event?.address }}</span>
+          <span class="text-color-secondary"> {{ event?.date }}</span>
 
           <span
             [style.color]="eventTypeColor(event)"
@@ -38,7 +39,7 @@
           ${{ event?.price }} per ticket
         </h2>
         <h1
-          class="text-3xl text-color-white font-normal underline mt-5 text-center"
+          class="text-3xl text-color-white font-normal underline mt-5 lg:text-left text-center"
           *ngIf="(event?.price <= 0)"
         >
           FREE ENTRANCE

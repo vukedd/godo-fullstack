@@ -3,15 +3,16 @@ import { ReviewOverviewDto } from '../../../models/review/ReviewOverviewDto';
 import { ReviewService } from '../../../services/review/review.service';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { ReviewCardComponent } from '../review-card/review-card.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { ManagesService } from '../../../services/manages/manages.service';
 import { AuthService } from '../../../services/auth/auth.service';
+import { ButtonModule } from "primeng/button";
 
 @Component({
   selector: 'app-review-page',
-  imports: [PaginatorModule, ReviewCardComponent, CommonModule],
+  imports: [PaginatorModule, ReviewCardComponent, CommonModule, ButtonModule, RouterModule],
   templateUrl: './review-page.component.html',
   styleUrl: './review-page.component.css',
 })
