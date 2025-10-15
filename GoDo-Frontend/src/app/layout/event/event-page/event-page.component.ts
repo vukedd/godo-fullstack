@@ -68,6 +68,7 @@ export class EventPageComponent implements OnInit {
       .pipe(
         switchMap((event) => {
           this.event = event;
+          console.log(event);
           this.eventType = event.type;
           this.isRecurrent = event.recurrent;
           return this.venueService.findVenueById(event.venueId);

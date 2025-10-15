@@ -1,15 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
-import { ButtonModule } from "primeng/button";
+import { ButtonModule } from 'primeng/button';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-admin-hub',
   imports: [
-    ButtonModule, 
+    ButtonModule,
     RouterLink,
-    RouterModule
+    RouterModule,
+    CommonModule,
   ],
   templateUrl: './admin-hub.component.html',
-  styleUrl: './admin-hub.component.css'
+  styleUrl: './admin-hub.component.css',
 })
-export class AdminHubComponent {}
+export class AdminHubComponent {
+
+}
