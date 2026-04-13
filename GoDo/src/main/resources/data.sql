@@ -127,16 +127,16 @@ INSERT INTO images (path, user_id, venue_id, event_id) VALUES
 
 INSERT INTO manages(start_date, manager_id, venue_id) VALUES ('2025-06-06', 2, 1);
 
-INSERT INTO comments (content, created_at, user_id, parent_id)
-VALUES ('This was an absolutely phenomenal show! The trumpet solos were out of this world.', '2023-10-28', 3, null);
+-- INSERT INTO comments (content, created_at, user_id, parent_id)
+-- VALUES ('This was an absolutely phenomenal show! The trumpet solos were out of this world.', '2023-10-28', 3, null);
 
-INSERT INTO comments (content, created_at, user_id, parent_id)
-VALUES ('Thank you so much for your kind words, vuka1sin! We are thrilled you enjoyed the tribute. Hope to see you again soon!', '2023-10-29', 2, 13);
-
-
-INSERT INTO reviews (status, created_at, user_id, event_id, venue_id, comment_id)
-VALUES (2, '2023-10-28', 3, 1, 1, 13);
+-- INSERT INTO comments (content, created_at, user_id, parent_id)
+-- VALUES ('Thank you so much for your kind words, vuka1sin! We are thrilled you enjoyed the tribute. Hope to see you again soon!', '2023-10-29', 2, 13);
 
 
-INSERT INTO ratings (performance, ambient, venue, overall_impression, review_id)
-VALUES (5, 4, 5, 5, 7);
+-- INSERT INTO reviews (status, created_at, user_id, event_id, venue_id, comment_id)
+-- VALUES (2, '2023-10-28', 3, 1, 1, 13);
+
+
+-- INSERT INTO ratings (performance, ambient, venue, overall_impression, review_id)
+-- VALUES (5, 4, 5, 5, 7);

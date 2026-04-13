@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    ports:
+      - ${DB_PORT}:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      - ${MAILHOG_PORT}:1025
+      - ${MAILHOG_UI_PORT}:8025
+
+  backend:
+    build: ./GoDo
+    ports:
+      - ${BACKEND_PORT}:8080
+    environment:
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      HOST_URL: backend
+      SPRING_MAIL_HOST: ${MAIL_HOST}
+      JWT_TTL: ${JWT_TTL}
+      RT_TTL: ${RT_TTL}
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./GoDo-Frontend
+    ports:
+      - ${FRONTEND_PORT}:80
+
+volumes:
+  pgdata:
