@@ -7,9 +7,12 @@ import { VenueCardComponent } from '../venue-card/venue-card.component';
 import { CommonModule } from '@angular/common';
 import { VenueService } from '../../../services/venue/venue.service';
 import { VenueOverviewDto } from '../../../models/venue/VenueOverviewDto';
-import { FilterVenueDto } from '../../../models/venue/FilterVenueDto';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FilterVenueDto, LogicalOperator } from '../../../models/venue/FilterVenueDto';
+import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-explore-venues-page',
@@ -22,7 +25,9 @@ import { FloatLabelModule } from 'primeng/floatlabel';
     CommonModule,
     ReactiveFormsModule,
     FloatLabelModule,
-    FormsModule
+    FormsModule,
+    InputNumberModule,
+    RadioButtonModule
   ],
   templateUrl: './explore-venues-page.component.html',
   styleUrl: './explore-venues-page.component.css',
@@ -31,53 +36,104 @@ export class ExploreVenuesPageComponent implements OnInit {
   venues: VenueOverviewDto[] = [];
   totalElements: number = 0;
   rows: number = 8;
-  currentPage: number = 0;
   first: number = 0;
-  currentFilter: string = '';
-  // currentType: any = { name: 'Select venue type', value: -1 };
+  filterForm!: FormGroup;
+  showAdvanced: boolean = false;
 
-  // public venueTypes = [
-  //   { name: 'Select venue type', value: -1 },
-  //   { name: 'Bar', value: 1 },
-  //   { name: 'Cultural Center', value: 0 },
-  //   { name: 'Museum', value: 7 },
-  //   { name: 'Night Club', value: 2 },
-  //   { name: 'Restaurant', value: 3 },
-  //   { name: 'Rooftop', value: 5 },
-  //   { name: 'Stadium', value: 6 },
-  //   { name: 'Theater', value: 4 },
-  // ];
-
-  filterForm = new FormGroup({
-    filter: new FormControl(''),
-  })
-
-  constructor(private venueService: VenueService) {}
+  constructor(
+    private venueService: VenueService,
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.loadVenues({ filter: '' }, 0);
+    this.filterForm = this.fb.group({
+      filter: [null],
+      minReviewCount: [null],
+      maxReviewCount: [null],
+      minRatingPerformance: [null],
+      maxRatingPerformance: [null],
+      minRatingAmbient: [null],
+      maxRatingAmbient: [null],
+      minRatingVenue: [null],
+      maxRatingVenue: [null],
+      minRatingOverall: [null],
+      maxRatingOverall: [null],
+      operator: [LogicalOperator.AND]
+    });
+
+    this.route.queryParams.subscribe(params => {
+      const page = params['page'] ? +params['page'] : 0;
+      this.first = page * this.rows;
+
+      this.filterForm.patchValue({
+        filter: params['filter'] || null,
+        minReviewCount: params['minReviewCount'] != null ? +params['minReviewCount'] : null,
+        maxReviewCount: params['maxReviewCount'] != null ? +params['maxReviewCount'] : null,
+        minRatingPerformance: params['minRatingPerformance'] != null ? +params['minRatingPerformance'] : null,
+        maxRatingPerformance: params['maxRatingPerformance'] != null ? +params['maxRatingPerformance'] : null,
+        minRatingAmbient: params['minRatingAmbient'] != null ? +params['minRatingAmbient'] : null,
+        maxRatingAmbient: params['maxRatingAmbient'] != null ? +params['maxRatingAmbient'] : null,
+        minRatingVenue: params['minRatingVenue'] != null ? +params['minRatingVenue'] : null,
+        maxRatingVenue: params['maxRatingVenue'] != null ? +params['maxRatingVenue'] : null,
+        minRatingOverall: params['minRatingOverall'] != null ? +params['minRatingOverall'] : null,
+        maxRatingOverall: params['maxRatingOverall'] != null ? +params['maxRatingOverall'] : null,
+        operator: params['operator'] || LogicalOperator.AND
+      }, { emitEvent: false });
+
+      this.showAdvanced = this.hasAdvancedFilters(params);
+
+      this.loadVenues(this.filterForm.value as FilterVenueDto, page);
+    });
+  }
+
+  private hasAdvancedFilters(params: any): boolean {
+    return ['minReviewCount', 'maxReviewCount',
+            'minRatingPerformance', 'maxRatingPerformance',
+            'minRatingAmbient', 'maxRatingAmbient',
+            'minRatingVenue', 'maxRatingVenue',
+            'minRatingOverall', 'maxRatingOverall']
+      .some(key => params[key] != null);
+  }
+
+  toggleAdvanced() {
+    this.showAdvanced = !this.showAdvanced;
   }
 
   onPageChange($event: PaginatorState) {
-    this.first = $event.first ?? 0;
-
-    this.loadVenues(
-      { filter: this.currentFilter },
-      $event.page ?? 0
-    );
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { page: $event.page ?? 0 },
+      queryParamsHandling: 'merge'
+    });
   }
 
   filter() {
-    this.currentFilter = this.filterForm.value.filter?.trim() ?? '';
-    this.loadVenues({ filter: this.currentFilter }, 0)
+    const v = this.filterForm.value;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        filter: v.filter || null,
+        minReviewCount: v.minReviewCount ?? null,
+        maxReviewCount: v.maxReviewCount ?? null,
+        minRatingPerformance: v.minRatingPerformance ?? null,
+        maxRatingPerformance: v.maxRatingPerformance ?? null,
+        minRatingAmbient: v.minRatingAmbient ?? null,
+        maxRatingAmbient: v.maxRatingAmbient ?? null,
+        minRatingVenue: v.minRatingVenue ?? null,
+        maxRatingVenue: v.maxRatingVenue ?? null,
+        minRatingOverall: v.minRatingOverall ?? null,
+        maxRatingOverall: v.maxRatingOverall ?? null,
+        operator: v.operator || LogicalOperator.AND,
+        page: 0
+      }
+    });
   }
 
   loadVenues(filterVenueDto: FilterVenueDto, page: number): void {
     this.venueService
-      .filterVenues(
-        filterVenueDto,
-        page
-      )
+      .filterVenues(filterVenueDto, page)
       .subscribe({
         next: (response) => {
           this.venues = response.content;

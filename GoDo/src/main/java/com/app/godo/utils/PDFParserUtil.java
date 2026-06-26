@@ -12,6 +12,22 @@ import java.io.InputStream;
 public class PDFParserUtil {
     private static final Logger logger = LogManager.getLogger(PDFParserUtil.class);
 
+    public static String extractTextFromStream(InputStream inputStream) {
+        try (PDDocument document = PDDocument.load(inputStream)) {
+            PDFTextStripper pdfStripper = new PDFTextStripper();
+            String rawText = pdfStripper.getText(document);
+            if (rawText != null) {
+                return rawText.replaceAll("\\r\\n|\\r|\\n|\\t", " ")
+                        .replaceAll("\\s+", " ")
+                        .trim();
+            }
+            return "";
+        } catch (Exception e) {
+            logger.error("Failed to parse PDF document from stream: ", e);
+            return "";
+        }
+    }
+
     public static String extractTextFromPDF(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             logger.warn("Attempted to parse an empty or null file.");

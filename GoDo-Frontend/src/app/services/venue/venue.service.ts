@@ -25,17 +25,13 @@ export class VenueService {
     filterVenueDto: FilterVenueDto,
     pageNumber: number
   ): Observable<any> {
-    let venueTypeParam = null;
-
 
     let queryParameters =
-      '?filter=' +
-      filterVenueDto.filter +
-      '&page=' +
+      '?page=' +
       pageNumber.toString() +
       '&size=8';
     
-    return this.http.get(environment.apiUrl + '/venue' + queryParameters);
+    return this.http.post(environment.apiUrl + '/venue' + queryParameters, filterVenueDto);
   }
 
   public findVenueById(venueId: string) : Observable<any> {

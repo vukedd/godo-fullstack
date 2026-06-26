@@ -3,23 +3,142 @@
 >
   <h1 class="text-primary">Explore venues</h1>
   <form
-    class="flex flex-column justify-content-center align-items-center w-full"
     [formGroup]="filterForm"
+    class="flex flex-column justify-content-center align-items-center w-full"
   >
-    <input
-      type="text"
-      pInputText
-      class="mx-2 w-full lg:w-5 my-2 border-round-top-xl"
-      id="input-filter"
-      placeholder="Explore venues"
-      formControlName="filter"
-    />
+    <!-- Main Search Row -->
+    <div class="flex w-full lg:w-5 my-2">
+      <input
+        type="text"
+        pInputText
+        class="w-full border-round-left-xl"
+        id="input-filter"
+        placeholder="Explore venues..."
+        formControlName="filter"
+      />
+      <button
+        type="button"
+        class="px-4 bg-primary border-none border-round-right-xl hover:bg-primary-200 font-bold cursor-pointer"
+        (click)="filter()"
+      >
+        Search
+      </button>
+    </div>
+
+    <!-- Advanced Filters Toggle Button -->
     <button
-      class="mx-2 w-full lg:w-5 my-2 py-2 bg-primary border-none border-round-bottom-lg hover:bg-primary-200 font-bold"
-      (click)="filter()"
+      type="button"
+      class="p-button-text text-primary font-semibold cursor-pointer border-none bg-transparent my-2"
+      (click)="toggleAdvanced()"
     >
-      Search
+      {{ showAdvanced ? 'Hide Advanced Filters' : 'Show Advanced Filters' }}
+      <i [class]="showAdvanced ? 'pi pi-chevron-up ml-1' : 'pi pi-chevron-down ml-1'"></i>
     </button>
+
+    <!-- Collapsible Advanced Filters Panel -->
+    <div 
+      *ngIf="showAdvanced" 
+      class="w-full lg:w-5 p-4 surface-card border-round-lg border-1 border-200 shadow-1 my-2"
+    >
+      
+      <!-- Operator Choice (AND / OR) -->
+      <div class="flex align-items-center justify-content-between mb-4">
+        <span class="font-bold text-sm text-700">Combine Filters Using:</span>
+        <div class="flex gap-3">
+          <div class="flex align-items-center gap-2">
+            <p-radioButton name="operator" value="AND" formControlName="operator" inputId="opAnd"></p-radioButton>
+            <label for="opAnd" class="font-semibold text-sm cursor-pointer">AND</label>
+          </div>
+          <div class="flex align-items-center gap-2">
+            <p-radioButton name="operator" value="OR" formControlName="operator" inputId="opOr"></p-radioButton>
+            <label for="opOr" class="font-semibold text-sm cursor-pointer">OR</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Count Range (Min / Max) -->
+      <div class="mb-4">
+        <label class="block font-bold text-sm text-700 mb-2">Number of Reviews</label>
+        <div class="grid">
+          <div class="col-6">
+            <p-inputNumber 
+              placeholder="Min reviews" 
+              formControlName="minReviewCount" 
+              styleClass="w-full" 
+              [min]="0">
+            </p-inputNumber>
+          </div>
+          <div class="col-6">
+            <p-inputNumber 
+              placeholder="Max reviews" 
+              formControlName="maxReviewCount" 
+              styleClass="w-full" 
+              [min]="0">
+            </p-inputNumber>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-top-1 border-none border-200 my-3" />
+
+      <!-- Ratings Ranges (Min / Max) -->
+      <label class="block font-bold text-sm text-700 mb-3">Ratings (0.0 to 5.0)</label>
+      
+      <div class="flex flex-column gap-3">
+        <!-- Performance / Nastup -->
+        <div>
+          <span class="block text-xs font-semibold text-600 mb-1">Performance (Nastup)</span>
+          <div class="grid">
+            <div class="col-6">
+              <p-inputNumber mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="1" placeholder="Min" formControlName="minRatingPerformance" [min]="0" [max]="5" styleClass="w-full"></p-inputNumber>
+            </div>
+            <div class="col-6">
+              <p-inputNumber mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="1" placeholder="Max" formControlName="maxRatingPerformance" [min]="0" [max]="5" styleClass="w-full"></p-inputNumber>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ambient / Zvuk & Svetlo -->
+        <div>
+          <span class="block text-xs font-semibold text-600 mb-1">Ambient (Zvuk / Svetlo)</span>
+          <div class="grid">
+            <div class="col-6">
+              <p-inputNumber mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="1" placeholder="Min" formControlName="minRatingAmbient" [min]="0" [max]="5" styleClass="w-full"></p-inputNumber>
+            </div>
+            <div class="col-6">
+              <p-inputNumber mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="1" placeholder="Max" formControlName="maxRatingAmbient" [min]="0" [max]="5" styleClass="w-full"></p-inputNumber>
+            </div>
+          </div>
+        </div>
+
+        <!-- Space / Prostor -->
+        <div>
+          <span class="block text-xs font-semibold text-600 mb-1">Space (Prostor)</span>
+          <div class="grid">
+            <div class="col-6">
+              <p-inputNumber mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="1" placeholder="Min" formControlName="minRatingVenue" [min]="0" [max]="5" styleClass="w-full"></p-inputNumber>
+            </div>
+            <div class="col-6">
+              <p-inputNumber mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="1" placeholder="Max" formControlName="maxRatingVenue" [min]="0" [max]="5" styleClass="w-full"></p-inputNumber>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overall Impression / Ukupan Utisak -->
+        <div>
+          <span class="block text-xs font-semibold text-600 mb-1">Overall Impression (Ukupan utisak)</span>
+          <div class="grid">
+            <div class="col-6">
+              <p-inputNumber mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="1" placeholder="Min" formControlName="minRatingOverall" [min]="0" [max]="5" styleClass="w-full"></p-inputNumber>
+            </div>
+            <div class="col-6">
+              <p-inputNumber mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="1" placeholder="Max" formControlName="maxRatingOverall" [min]="0" [max]="5" styleClass="w-full"></p-inputNumber>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </form>
   <div class="grid w-full mt-5" *ngIf="this.venues.length > 0">
     <div *ngFor="let venue of venues" class="md:col-3 p-2 col-12">

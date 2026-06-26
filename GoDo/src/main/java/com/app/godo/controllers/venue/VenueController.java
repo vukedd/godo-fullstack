@@ -1,10 +1,7 @@
 package com.app.godo.controllers.venue;
 
 
-import com.app.godo.dtos.venue.CreateVenueRequestDto;
-import com.app.godo.dtos.venue.UpdateVenueDto;
-import com.app.godo.dtos.venue.VenueIndexOverviewDto;
-import com.app.godo.dtos.venue.VenueOverviewDto;
+import com.app.godo.dtos.venue.*;
 import com.app.godo.models.Venue;
 import com.app.godo.services.venue.VenueService;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +23,12 @@ import static org.springframework.http.ResponseEntity.noContent;
 public class VenueController {
     private final VenueService venueService;
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<Page<VenueIndexOverviewDto>> filterVenues(
-            @RequestParam(value = "filter", defaultValue = "") String filter,
+            @RequestBody VenueFilterDto searchRequest,
             @PageableDefault(size = 8, sort = "name", direction = Sort.Direction.ASC) Pageable venuePage
     ){
-        return ResponseEntity.ok(venueService.filterVenues(filter, venuePage));
+        return ResponseEntity.ok(venueService.filterVenues(searchRequest, venuePage));
     }
 
     @PostMapping(consumes = { "multipart/form-data" })

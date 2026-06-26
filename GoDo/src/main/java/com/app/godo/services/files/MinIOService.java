@@ -94,6 +94,20 @@ public class MinIOService {
         return "http://localhost:9000/" + bucketName + "/" + filename;
     }
 
+    public InputStream getFileStream(String filename) {
+        try {
+            return minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(filename)
+                            .build()
+            );
+        } catch (Exception e) {
+            logger.error("Failed to get file stream from MinIO: {}", filename, e);
+            throw new RuntimeException("Could not retrieve file from storage server.", e);
+        }
+    }
+
     public void deleteFile(String filename) {
         if (filename == null || filename.isEmpty()) {
             logger.warn("Attempted to delete a file, but the provided filename was null or empty.");
