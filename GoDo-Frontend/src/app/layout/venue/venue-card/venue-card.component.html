@@ -9,7 +9,11 @@
         <h4 [style.color]="venueTypeColor()">{{ venueType }}</h4>
     </div>
     <div>
-        <p>{{ venue.description }}</p>
+        @if (venue.highlightedDescription) {
+            <p>...&nbsp;<span [innerHTML]="venue.highlightedDescription"></span>&nbsp;...</p>
+        } @else {
+            <p>{{ venue.description }}</p>
+        }
     </div>
     <div class="flex gap-2 mt-auto w-full">
         <!-- View details button -->

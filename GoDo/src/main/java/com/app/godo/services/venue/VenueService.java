@@ -35,6 +35,10 @@ import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.HighlightQuery;
+import org.springframework.data.elasticsearch.core.query.highlight.Highlight;
+import org.springframework.data.elasticsearch.core.query.highlight.HighlightField;
+import org.springframework.data.elasticsearch.core.query.highlight.HighlightParameters;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -102,33 +106,47 @@ public class VenueService {
         String filter = request.getFilter();
         if (filter != null && !filter.trim().isEmpty()) {
             String trimmed = filter.trim();
-            BoolQuery.Builder textShouldQuery = new BoolQuery.Builder();
 
-            if (trimmed.startsWith("\"") && trimmed.endsWith("\"") && trimmed.length() > 1) {
-                String phrase = trimmed.substring(1, trimmed.length() - 1);
-                textShouldQuery.should(QueryBuilders.matchPhrase(m -> m.field("name").query(phrase)));
-                textShouldQuery.should(QueryBuilders.matchPhrase(m -> m.field("description").query(phrase)));
-                textShouldQuery.should(QueryBuilders.matchPhrase(m -> m.field("pdfDescription").query(phrase)));
-            } else if (trimmed.endsWith("*") && trimmed.length() > 1) {
-                String prefix = trimmed.substring(0, trimmed.length() - 1);
-                String normalizedPrefix = normalizeSerbian(prefix);
-                textShouldQuery.should(QueryBuilders.prefix(p -> p.field("name").value(normalizedPrefix)));
-                textShouldQuery.should(QueryBuilders.prefix(p -> p.field("description").value(normalizedPrefix)));
-                textShouldQuery.should(QueryBuilders.prefix(p -> p.field("pdfDescription").value(normalizedPrefix)));
-            } else if (trimmed.startsWith("~") && trimmed.length() > 1) {
-                String term = trimmed.substring(1);
-                String normalizedTerm = normalizeSerbian(term);
-                textShouldQuery.should(QueryBuilders.fuzzy(f -> f.field("name").value(normalizedTerm).fuzziness("AUTO")));
-                textShouldQuery.should(QueryBuilders.fuzzy(f -> f.field("description").value(normalizedTerm).fuzziness("AUTO")));
-                textShouldQuery.should(QueryBuilders.fuzzy(f -> f.field("pdfDescription").value(normalizedTerm).fuzziness("AUTO")));
+            if (trimmed.startsWith("!") && trimmed.length() > 1) {
+                String likeText = trimmed.substring(1).trim();
+                mainBoolQuery.must(QueryBuilders.moreLikeThis(mlt -> mlt
+                        .fields("name", "description", "pdfDescription")
+                        .like(l -> l.text(likeText))
+                        .minTermFreq(1)
+                        .minDocFreq(1)
+                        .maxQueryTerms(12)
+                        .minWordLength(3)
+                ));
             } else {
-                textShouldQuery.should(QueryBuilders.match(m -> m.field("name").query(trimmed)));
-                textShouldQuery.should(QueryBuilders.match(m -> m.field("description").query(trimmed)));
-                textShouldQuery.should(QueryBuilders.match(m -> m.field("pdfDescription").query(trimmed)));
+                BoolQuery.Builder textShouldQuery = new BoolQuery.Builder();
+
+                if (trimmed.startsWith("\"") && trimmed.endsWith("\"") && trimmed.length() > 1) {
+                    String phrase = trimmed.substring(1, trimmed.length() - 1);
+                    textShouldQuery.should(QueryBuilders.matchPhrase(m -> m.field("name").query(phrase)));
+                    textShouldQuery.should(QueryBuilders.matchPhrase(m -> m.field("description").query(phrase)));
+                    textShouldQuery.should(QueryBuilders.matchPhrase(m -> m.field("pdfDescription").query(phrase)));
+                } else if (trimmed.endsWith("*") && trimmed.length() > 1) {
+                    String prefix = trimmed.substring(0, trimmed.length() - 1);
+                    String normalizedPrefix = normalizeSerbian(prefix);
+                    textShouldQuery.should(QueryBuilders.prefix(p -> p.field("name").value(normalizedPrefix)));
+                    textShouldQuery.should(QueryBuilders.prefix(p -> p.field("description").value(normalizedPrefix)));
+                    textShouldQuery.should(QueryBuilders.prefix(p -> p.field("pdfDescription").value(normalizedPrefix)));
+                } else if (trimmed.startsWith("~") && trimmed.length() > 1) {
+                    String term = trimmed.substring(1);
+                    String normalizedTerm = normalizeSerbian(term);
+                    textShouldQuery.should(QueryBuilders.fuzzy(f -> f.field("name").value(normalizedTerm).fuzziness("AUTO")));
+                    textShouldQuery.should(QueryBuilders.fuzzy(f -> f.field("description").value(normalizedTerm).fuzziness("AUTO")));
+                    textShouldQuery.should(QueryBuilders.fuzzy(f -> f.field("pdfDescription").value(normalizedTerm).fuzziness("AUTO")));
+                } else {
+                    textShouldQuery.should(QueryBuilders.match(m -> m.field("name").query(trimmed)));
+                    textShouldQuery.should(QueryBuilders.match(m -> m.field("description").query(trimmed)));
+                    textShouldQuery.should(QueryBuilders.match(m -> m.field("pdfDescription").query(trimmed)));
+                }
+
+                textShouldQuery.minimumShouldMatch("1");
+                mainBoolQuery.must(textShouldQuery.build()._toQuery());
             }
 
-            textShouldQuery.minimumShouldMatch("1");
-            mainBoolQuery.must(textShouldQuery.build()._toQuery());
             hasCriteria = true;
         }
 
@@ -175,8 +193,21 @@ public class VenueService {
             finalQuery = QueryBuilders.matchAll(m -> m);
         }
 
+        HighlightQuery highlightQuery = new HighlightQuery(
+                new Highlight(
+                        HighlightParameters.builder().withNumberOfFragments(1).withFragmentSize(150).build(),
+                        List.of(
+                                new HighlightField("name"),
+                                new HighlightField("description"),
+                                new HighlightField("pdfDescription")
+                        )
+                ),
+                VenueDocument.class
+        );
+
         org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder nativeQueryBuilder = NativeQuery.builder()
                 .withQuery(finalQuery)
+                .withHighlightQuery(highlightQuery)
                 .withPageable(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()));
 
         // Apply Sorting (Existing sorting logic)
@@ -459,8 +490,18 @@ public class VenueService {
 
     private VenueIndexOverviewDto mapToDto(SearchHit<VenueDocument> hit) {
         VenueDocument doc = hit.getContent();
+        Map<String, List<String>> highlights = hit.getHighlightFields();
 
-        String descriptionToDisplay = doc.getDescription();
+        String highlightedDescription = null;
+        if (highlights != null && !highlights.isEmpty()) {
+            if (highlights.containsKey("pdfDescription") && !highlights.get("pdfDescription").isEmpty()) {
+                highlightedDescription = String.join("... ", highlights.get("pdfDescription"));
+            } else if (highlights.containsKey("description") && !highlights.get("description").isEmpty()) {
+                highlightedDescription = String.join("... ", highlights.get("description"));
+            } else if (highlights.containsKey("name") && !highlights.get("name").isEmpty()) {
+                highlightedDescription = String.join("... ", highlights.get("name"));
+            }
+        }
 
         String imageUrl = minIOService.getFileUrl(doc.getImageFilename());
         String pdfUrl = minIOService.getFileUrl(doc.getPdfFilename());
@@ -468,7 +509,8 @@ public class VenueService {
         return VenueIndexOverviewDto.builder()
                 .id(doc.getId())
                 .name(doc.getName())
-                .description(descriptionToDisplay)
+                .description(doc.getDescription())
+                .highlightedDescription(highlightedDescription)
                 .type(VenueType.valueOf(doc.getType()))
                 .imagePath(imageUrl)
                 .pdfPath(pdfUrl)

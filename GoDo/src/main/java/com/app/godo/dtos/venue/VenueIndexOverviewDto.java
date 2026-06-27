@@ -20,6 +20,7 @@ public class VenueIndexOverviewDto {
     private VenueType type;
     private String imagePath;
     private String pdfPath;
+    private String highlightedDescription;
 
     public static VenueIndexOverviewDto fromEntity(Venue venue, String imagePath, String pdfPath) {
         return new VenueIndexOverviewDto(
@@ -30,7 +31,8 @@ public class VenueIndexOverviewDto {
                 venue.getAverageRating(),
                 venue.getType(),
                 (imagePath != null && !imagePath.isEmpty()) ? venue.getImage().getPath()  : "https://picsum.photos/800/600",
-                pdfPath
+                pdfPath,
+                null
         );
     }
 }
